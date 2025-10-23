@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GamerTrials — Challenges & Rankings</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="gt-header">
+    <div class="gt-container">
+        <a class="gt-brand" href="/">
+            <span class="gt-logo">GT</span>
+            <span class="gt-name">GamerTrials</span>
+        </a>
+        <nav class="gt-nav">
+            <a class="gt-link gt-active" href="#">Challenges</a>
+            <a class="gt-link" href="#">Tournaments</a>
+            <a class="gt-link" href="#">Leaderboard</a>
+            <a class="gt-link" href="#">Community</a>
+        </nav>
+        <div class="gt-actions">
+            <a class="gt-btn ghost" href="#">Log In</a>
+            <a class="gt-btn" href="#">Join</a>
+        </div>
+    </div>
+</header>
+
+<section class="gt-hero">
+    <div class="gt-container hero-grid">
+        <div class="hero-left">
+            <h1>Compete. Win. Level Up.</h1>
+            <p>Join players who complete daily challenges and climb the global leaderboard. Earn XP and unlock exclusive rewards.</p>
+            <div class="hero-cta">
+                <a class="gt-btn xl" href="#">Start a Challenge</a>
+                <a class="gt-btn ghost xl" href="#">View Leaderboard</a>
+            </div>
+            <div class="hero-stats">
+                <div><strong>1,248</strong><span>Active Challenges</span></div>
+                <div><strong>32,415</strong><span>Players Online</span></div>
+                <div><strong>9.7M</strong><span>Total XP Earned</span></div>
+            </div>
+        </div>
+        <div class="hero-right">
+            <div class="hero-card">
+                <div class="hc-top">
+                    <span class="badge">Featured</span>
+                    <h3>Speedrun Master</h3>
+                    <p>Finish the route in under 5 minutes to earn bonus XP.</p>
+                </div>
+                <div class="hc-bottom">
+                    <div class="pill">Solo</div>
+                    <div class="pill">Time Trial</div>
+                    <div class="pill">+250 XP</div>
+                </div>
+                <a class="gt-btn wide" href="#">Join Challenge</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="gt-section">
+    <div class="gt-container">
+        <div class="sec-head">
+            <h2>Popular Challenges</h2>
+            <a class="gt-link" href="#">All Challenges</a>
+        </div>
+        <div class="card-grid">
+            <article class="challenge">
+                <div class="c-head">
+                    <h3>Sniper Elite</h3>
+                    <span class="pill">+180 XP</span>
+                </div>
+                <p>Get 20 consecutive headshots. Precision matters.</p>
+                <div class="c-meta">
+                    <span>Avg. Time: 12 min</span>
+                    <span>Completed: 3.1k</span>
+                </div>
+                <a class="gt-btn full" href="#">Join</a>
+            </article>
+
+            <article class="challenge">
+                <div class="c-head">
+                    <h3>Survivor Mode</h3>
+                    <span class="pill">+220 XP</span>
+                </div>
+                <p>Survive 10 minutes without dying. Prove your skill.</p>
+                <div class="c-meta">
+                    <span>Avg. Time: 10 min</span>
+                    <span>Completed: 4.6k</span>
+                </div>
+                <a class="gt-btn full" href="#">Join</a>
+            </article>
+
+            <article class="challenge">
+                <div class="c-head">
+                    <h3>Control Points</h3>
+                    <span class="pill">+150 XP</span>
+                </div>
+                <p>Capture 10 points in one session. Teamwork required.</p>
+                <div class="c-meta">
+                    <span>Avg. Time: 8 min</span>
+                    <span>Completed: 2.8k</span>
+                </div>
+                <a class="gt-btn full" href="#">Join</a>
+            </article>
+
+            <article class="challenge">
+                <div class="c-head">
+                    <h3>Speedrun Master</h3>
+                    <span class="pill">+250 XP</span>
+                </div>
+                <p>Finish the map in record time and dominate the board.</p>
+                <div class="c-meta">
+                    <span>Avg. Time: 6 min</span>
+                    <span>Completed: 5.2k</span>
+                </div>
+                <a class="gt-btn full" href="#">Join</a>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="gt-section alt">
+    <div class="gt-container">
+        <div class="sec-head">
+            <h2>Top Players</h2>
+            <a class="gt-link" href="#">Full Leaderboard</a>
+        </div>
+        <div class="board">
+            <div class="row head">
+                <div>#</div><div>Player</div><div>Level</div><div>XP</div>
+            </div>
+            <div class="row">
+                <div>1</div><div>ShadowWolf</div><div>52</div><div>3,250</div>
+            </div>
+            <div class="row">
+                <div>2</div><div>PixelKing</div><div>49</div><div>2,980</div>
+            </div>
+            <div class="row">
+                <div>3</div><div>NoScope</div><div>47</div><div>2,720</div>
+            </div>
+            <div class="row">
+                <div>4</div><div>Ace</div><div>45</div><div>2,610</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="gt-footer">
+    <div class="gt-container">
+        <div>© 2025 GamerTrials — All rights reserved</div>
+        <nav class="foot-nav">
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+            <a href="#">Contact</a>
+        </nav>
+    </div>
+</footer>
+</body>
+</html>

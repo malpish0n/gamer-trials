@@ -1,4 +1,4 @@
-package com.malpishon.gamertrials;
+package com.malpishon.gamertrials.controller;
 
 
 import org.springframework.stereotype.Controller;

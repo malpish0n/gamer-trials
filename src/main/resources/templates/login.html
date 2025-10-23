@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GamerTrials — Login</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <a href="/" class="auth-logo">GamerTrials</a>
+        <h1>Welcome back</h1>
+        <p class="auth-subtext">Sign in to continue your progress and challenges.</p>
+
+        <form action="#" method="post" class="auth-form">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" required>
+            </div>
+
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" required>
+            </div>
+
+            <button type="submit" class="gt-btn wide">Log In</button>
+        </form>
+
+        <p class="auth-footer">
+            Don’t have an account?
+            <a href="/register">Create one</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>

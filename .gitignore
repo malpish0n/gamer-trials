@@ -32,3 +32,16 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Local PostgreSQL & pgAdmin data
+pgdata/
+pgadmin-data/
+
+# IDE and OS
+.idea/
+.vscode/
+.DS_Store
+
+# Maven & build output
+target/
+

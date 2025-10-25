@@ -15,7 +15,8 @@
         <h1>Welcome back</h1>
         <p class="auth-subtext">Sign in to continue your progress and challenges.</p>
 
-        <form action="#" method="post" class="auth-form">
+        <!-- poprawiony formularz -->
+        <form th:action="@{/login}" method="post" class="auth-form">
             <div class="input-group">
                 <label for="username">Username</label>
                 <input id="username" name="username" type="text" required>

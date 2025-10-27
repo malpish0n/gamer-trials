@@ -219,3 +219,55 @@ body{
     .hero-left h1{font-size:36px}
     .card-grid{grid-template-columns:1fr}
 }
+.gt-user {
+    position: relative;
+    display: inline-block;
+}
+
+.user-trigger {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border-radius: 8px;
+}
+
+.user-trigger:hover {
+    background: rgba(255,255,255,.04);
+}
+
+.user-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%; /* zamiast 130% */
+    margin-top: 2px; /* minimalna przerwa bez znikania */
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    min-width: 170px;
+    padding: 6px 0;
+    z-index: 20;
+}
+
+.user-menu a {
+    display: block;
+    padding: 10px 16px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+}
+
+.user-menu a:hover {
+    background: rgba(255,255,255,.05);
+    color: var(--accent);
+}
+
+.user-menu hr {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 6px 0;
+}
+
+

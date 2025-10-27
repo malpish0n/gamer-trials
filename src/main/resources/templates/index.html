@@ -8,6 +8,33 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
 </head>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const user = document.querySelector(".gt-user");
+        if (!user) return;
+        const menu = user.querySelector(".user-menu");
+        const trigger = user.querySelector(".user-trigger");
+
+        let hideTimer;
+
+        const show = () => {
+            clearTimeout(hideTimer);
+            menu.style.display = "block";
+        };
+        const hide = () => {
+            hideTimer = setTimeout(() => {
+                menu.style.display = "none";
+            }, 150);
+        };
+
+        trigger.addEventListener("mouseenter", show);
+        trigger.addEventListener("mouseleave", hide);
+        menu.addEventListener("mouseenter", show);
+        menu.addEventListener("mouseleave", hide);
+    });
+</script>
+
 <body>
 <header class="gt-header">
     <div class="gt-container">
@@ -15,15 +42,35 @@
             <span class="gt-logo">GT</span>
             <span class="gt-name">GamerTrials</span>
         </a>
+
         <nav class="gt-nav">
             <a class="gt-link gt-active" href="#">Challenges</a>
             <a class="gt-link" href="#">Tournaments</a>
             <a class="gt-link" href="#">Leaderboard</a>
             <a class="gt-link" href="#">Community</a>
         </nav>
+
         <div class="gt-actions">
-            <a class="gt-btn ghost" href="#">Log In</a>
-            <a class="gt-btn" href="#">Join</a>
+            <!-- widoczne tylko dla niezalogowanych -->
+            <div th:if="${#authorization.expression('!isAuthenticated()')}">
+                <a class="gt-btn ghost" href="/login">Log In</a>
+                <a class="gt-btn" href="/register">Join</a>
+            </div>
+
+            <!-- widoczne tylko dla zalogowanych -->
+            <div class="gt-user" th:if="${#authorization.expression('isAuthenticated()')}">
+                <div class="user-trigger">
+                    <span>Hi, <strong th:text="${#authentication.name}">User</strong></span>
+                    <span class="arrow">▾</span>
+                </div>
+                <div class="user-menu">
+                    <a href="#">Profile</a>
+                    <a href="#">Settings</a>
+                    <a href="#">Activity</a>
+                    <hr>
+                    <a href="/logout">Logout</a>
+                </div>
+            </div>
         </div>
     </div>
 </header>
@@ -43,6 +90,7 @@
                 <div><strong>9.7M</strong><span>Total XP Earned</span></div>
             </div>
         </div>
+
         <div class="hero-right">
             <div class="hero-card">
                 <div class="hc-top">

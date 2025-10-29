@@ -51,19 +51,18 @@
         </nav>
 
         <div class="gt-actions">
-            <!-- widoczne tylko dla niezalogowanych -->
             <div th:if="${#authorization.expression('!isAuthenticated()')}">
                 <a class="gt-btn ghost" href="/login">Log In</a>
                 <a class="gt-btn" href="/register">Join</a>
             </div>
 
-            <!-- widoczne tylko dla zalogowanych -->
             <div class="gt-user" th:if="${#authorization.expression('isAuthenticated()')}">
                 <div class="user-trigger">
                     <span>Hi, <strong th:text="${#authentication.name}">User</strong></span>
                     <span class="arrow">▾</span>
                 </div>
                 <div class="user-menu">
+                    <a th:href="@{/dashboard}">Dashboard</a>
                     <a href="#">Profile</a>
                     <a href="#">Settings</a>
                     <a href="#">Activity</a>

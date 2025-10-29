@@ -1,20 +1,5 @@
 services:
 
-  app:
-    build: .
-    container_name: gamertrials-app
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
-    depends_on:
-      - postgres
-    restart: always
-    networks:
-      - gamertrials-net
-
   postgres:
     image: postgres:16
     container_name: gamertrials-db
@@ -26,7 +11,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - gamertrials_postgres_data:/var/lib/postgresql/data
     networks:
       - gamertrials-net
 
@@ -42,10 +27,31 @@ services:
     depends_on:
       - postgres
     volumes:
-      - ./pgadmin-data:/var/lib/pgadmin
+      - gamertrials_pgadmin_data:/var/lib/pgadmin
     networks:
       - gamertrials-net
-  
+
+  app:
+    build: .
+    container_name: gamertrials-app
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/gamertrials
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    networks:
+      - gamertrials-net
+
+volumes:
+  gamertrials_postgres_data:
+    external: true
+  gamertrials_pgadmin_data:
+    external: true
+
 networks:
   gamertrials-net:
     driver: bridge

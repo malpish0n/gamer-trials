@@ -270,4 +270,28 @@ body{
     margin: 6px 0;
 }
 
+.c-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;   /* klucz: wyrównaj do linii bazowej */
+    gap: 12px;
+}
+
+.c-head h3 {
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* badge XP */
+.c-head .pill {
+    display: inline-flex;     /* żeby baseline działał przewidywalnie */
+    align-items: center;
+    height: 28px;             /* nie rośnie w dół */
+    padding: 0 10px;          /* rozszerza się na boki */
+    white-space: nowrap;      /* nie łamie się w dwie linie */
+    line-height: 1;           /* brak pionowego rozciągania od fontu */
+}
+
+
+
 

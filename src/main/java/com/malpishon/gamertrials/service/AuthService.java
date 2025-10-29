@@ -28,6 +28,10 @@ public class AuthService {
             throw new RuntimeException("Username already exists");
         }
 
+        // Assign default role for all new registrations
+        user.setRole("USER");
+
+        // Encode password before saving
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
 

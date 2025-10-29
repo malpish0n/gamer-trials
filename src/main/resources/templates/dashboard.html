@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>GamerTrials — Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+<header class="gt-header">
+    <div class="gt-container">
+        <a class="gt-brand" href="/">
+            <span class="gt-logo">GT</span>
+            <span class="gt-name">GamerTrials</span>
+        </a>
+
+        <nav class="gt-nav">
+            <a class="gt-link" href="#">Challenges</a>
+            <a class="gt-link" href="#">Tournaments</a>
+            <a class="gt-link" href="#">Leaderboard</a>
+            <a class="gt-link" href="#">Community</a>
+        </nav>
+
+        <div class="gt-actions" th:if="${#authorization.expression('isAuthenticated()')}">
+            <div class="gt-user">
+                <div class="user-trigger">
+                    <span>Hi, <strong th:text="${username}">User</strong></span>
+                    <span class="arrow">▾</span>
+                </div>
+                <div class="user-menu">
+                    <a th:href="@{/profile}">Profile</a>
+                    <a class="active" th:href="@{/dashboard}">Dashboard</a>
+                    <a href="#">Settings</a>
+                    <a href="#">Activity</a>
+                    <hr>
+                    <a href="/logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="gt-section">
+    <div class="gt-container" style="display:grid;grid-template-columns:320px 1fr;gap:24px;align-items:start">
+
+        <!-- Left column -->
+        <aside class="card" style="background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)">
+            <div style="display:flex;align-items:center;gap:16px">
+                <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#0b0c0d;font-size:28px"
+                     th:text="${#strings.substring(username,0,1)?.toUpperCase()}">U</div>
+                <div>
+                    <div style="font-weight:700;font-size:18px" th:text="${username}">User</div>
+                    <div style="color:var(--muted);font-size:13px" th:text="${#authentication.principal?.authorities}">ROLE_USER</div>
+                </div>
+            </div>
+
+            <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <div class="mini" style="background:var(--card-2);border-radius:12px;padding:14px">
+                    <div style="color:var(--muted);font-size:12px">Level</div>
+                    <div style="font-weight:800;font-size:20px">12</div>
+                </div>
+                <div class="mini" style="background:var(--card-2);border-radius:12px;padding:14px">
+                    <div style="color:var(--muted);font-size:12px">Total XP</div>
+                    <div style="font-weight:800;font-size:20px">4,820</div>
+                </div>
+                <div class="mini" style="background:var(--card-2);border-radius:12px;padding:14px">
+                    <div style="color:var(--muted);font-size:12px">Rank</div>
+                    <div style="font-weight:800;font-size:20px">#214</div>
+                </div>
+                <div class="mini" style="background:var(--card-2);border-radius:12px;padding:14px">
+                    <div style="color:var(--muted);font-size:12px">Badges</div>
+                    <div style="font-weight:800;font-size:20px">7</div>
+                </div>
+            </div>
+
+            <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">
+                <a class="gt-btn" href="#" style="flex:1 1 48%">Start Challenge</a>
+                <a class="gt-btn ghost" href="#" style="flex:1 1 48%">Find Party</a>
+                <a class="gt-btn ghost" href="#" style="flex:1 1 100%">Edit Profile</a>
+            </div>
+
+            <div style="margin-top:22px">
+                <div style="font-weight:700;margin-bottom:10px">Badges</div>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+                    <div style="height:56px;border-radius:12px;background:var(--card-2);display:flex;align-items:center;justify-content:center">🏆</div>
+                    <div style="height:56px;border-radius:12px;background:var(--card-2);display:flex;align-items:center;justify-content:center">⚡</div>
+                    <div style="height:56px;border-radius:12px;background:var(--card-2);display:flex;align-items:center;justify-content:center">🎯</div>
+                    <div style="height:56px;border-radius:12px;background:var(--card-2);display:flex;align-items:center;justify-content:center;opacity:.45">🔒</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right column -->
+        <main style="display:grid;gap:24px">
+            <section class="card" style="background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)">
+                <div class="sec-head" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                    <h2 style="margin:0">Your Activity</h2>
+                    <a class="gt-link" href="#">View all</a>
+                </div>
+                <div style="display:grid;gap:12px">
+                    <div style="display:flex;justify-content:space-between;background:var(--card-2);border-radius:12px;padding:12px">
+                        <div>Completed <strong>Speedrun Master</strong></div>
+                        <div class="pill">+250 XP</div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;background:var(--card-2);border-radius:12px;padding:12px">
+                        <div>Joined <strong>Survivor Mode</strong></div>
+                        <div class="pill">In progress</div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;background:var(--card-2);border-radius:12px;padding:12px">
+                        <div>New badge <strong>Precision</strong></div>
+                        <div class="pill">Unlocked</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card" style="background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)">
+                <div class="sec-head" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                    <h2 style="margin:0">Current Challenges</h2>
+                    <a class="gt-link" href="#">Browse</a>
+                </div>
+
+                <div class="card-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+                    <article class="challenge" style="background:var(--card-2);border-radius:14px;padding:14px">
+                        <div class="c-head" style="display:flex;justify-content:space-between;align-items:center">
+                            <h3 style="margin:0">Speedrun Master</h3>
+                            <span class="pill">+250 XP</span>
+                        </div>
+                        <p style="color:var(--muted);margin:8px 0 10px">Finish under 5 minutes.</p>
+                        <div style="height:8px;background:var(--line);border-radius:6px;overflow:hidden">
+                            <div style="height:100%;width:70%;background:var(--accent)"></div>
+                        </div>
+                        <a class="gt-btn full" href="#" style="margin-top:10px">Resume</a>
+                    </article>
+
+                    <article class="challenge" style="background:var(--card-2);border-radius:14px;padding:14px">
+                        <div class="c-head" style="display:flex;justify-content:space-between;align-items:center">
+                            <h3 style="margin:0">Survivor Mode</h3>
+                            <span class="pill">+220 XP</span>
+                        </div>
+                        <p style="color:var(--muted);margin:8px 0 10px">Survive 10 minutes.</p>
+                        <div style="height:8px;background:var(--line);border-radius:6px;overflow:hidden">
+                            <div style="height:100%;width:40%;background:var(--accent)"></div>
+                        </div>
+                        <a class="gt-btn ghost full" href="#" style="margin-top:10px">Details</a>
+                    </article>
+
+                    <article class="challenge" style="background:var(--card-2);border-radius:14px;padding:14px">
+                        <div class="c-head" style="display:flex;justify-content:space-between;align-items:center">
+                            <h3 style="margin:0">Control Points</h3>
+                            <span class="pill">+150 XP</span>
+                        </div>
+                        <p style="color:var(--muted);margin:8px 0 10px">Capture 10 points.</p>
+                        <div style="height:8px;background:var(--line);border-radius:6px;overflow:hidden">
+                            <div style="height:100%;width:15%;background:var(--accent)"></div>
+                        </div>
+                        <a class="gt-btn ghost full" href="#" style="margin-top:10px">Details</a>
+                    </article>
+                </div>
+            </section>
+
+            <section class="card" style="background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)">
+                <div class="sec-head" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                    <h2 style="margin:0">Quick Links</h2>
+                </div>
+                <div style="display:flex;gap:12px;flex-wrap:wrap">
+                    <a class="gt-btn" href="#">Create Challenge</a>
+                    <a class="gt-btn ghost" href="#">My Results</a>
+                    <a class="gt-btn ghost" href="#">Badges</a>
+                    <a class="gt-btn ghost" href="#">Account Security</a>
+                </div>
+            </section>
+        </main>
+    </div>
+</section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const user = document.querySelector(".gt-user");
+        if (!user) return;
+        const menu = user.querySelector(".user-menu");
+        const trigger = user.querySelector(".user-trigger");
+        let t;
+        const show=()=>{clearTimeout(t);menu.style.display="block"};
+        const hide=()=>{t=setTimeout(()=>menu.style.display="none",150)};
+        trigger.addEventListener("mouseenter",show);
+        trigger.addEventListener("mouseleave",hide);
+        menu.addEventListener("mouseenter",show);
+        menu.addEventListener("mouseleave",hide);
+    });
+</script>
+</body>
+</html>

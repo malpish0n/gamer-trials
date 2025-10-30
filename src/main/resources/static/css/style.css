@@ -67,6 +67,9 @@ body{
 }
 .gt-name{font-weight:800;letter-spacing:.4px}
 
+/* Image logo used in header */
+.gt-logo-img{height:36px;width:auto;display:block;border-radius:8px}
+
 .gt-nav{display:flex;gap:18px}
 .gt-link{
     color:var(--muted);
@@ -240,8 +243,8 @@ body{
     display: none;
     position: absolute;
     right: 0;
-    top: 100%; /* zamiast 130% */
-    margin-top: 2px; /* minimalna przerwa bez znikania */
+    top: 100%;
+    margin-top: 2px;
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: var(--radius);
@@ -273,7 +276,7 @@ body{
 .c-head {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;   /* klucz: wyrównaj do linii bazowej */
+    align-items: baseline;
     gap: 12px;
 }
 
@@ -282,14 +285,13 @@ body{
     line-height: 1.2;
 }
 
-/* badge XP */
 .c-head .pill {
-    display: inline-flex;     /* żeby baseline działał przewidywalnie */
+    display: inline-flex;
     align-items: center;
-    height: 28px;             /* nie rośnie w dół */
-    padding: 0 10px;          /* rozszerza się na boki */
-    white-space: nowrap;      /* nie łamie się w dwie linie */
-    line-height: 1;           /* brak pionowego rozciągania od fontu */
+    height: 28px;
+    padding: 0 10px;
+    white-space: nowrap;
+    line-height: 1;
 }
 
 

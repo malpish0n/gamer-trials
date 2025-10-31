@@ -172,9 +172,16 @@ body{
     box-shadow:0 10px 40px rgba(0,0,0,.35), 0 0 32px rgba(0,255,128,.08);
     border-color:rgba(0,255,128,.35);
 }
-.c-head{display:flex;align-items:center;justify-content:space-between}
-.c-head h3{margin:0}
-.c-meta{display:flex;gap:16px;color:var(--muted);font-size:.93rem}
+.c-head{display:flex;align-items:flex-start;justify-content:space-between}
+.c-head h3{margin:0;flex:1;min-height:2.6em;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.c-meta{display:flex;gap:16px;color:var(--muted);font-size:.93rem;line-height:1.2;min-height:1.2em}
+.challenge>p{margin:6px 0 8px;color:var(--muted);line-height:1.3;min-height:2.6em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+@media (max-width:600px){
+  .c-head h3{min-height:1.3em;-webkit-line-clamp:1}
+  .challenge>p{min-height:1.3em;-webkit-line-clamp:1}
+}
+.challenge .gt-btn.full{margin-top:auto}
 
 .board{
     border:1px solid var(--line);

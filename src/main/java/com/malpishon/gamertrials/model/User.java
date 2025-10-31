@@ -16,6 +16,10 @@ public class User {
     private String email;
     private String role;
     private LocalDate birthDate;
+    private String avatarUrl;
+    private String bio;
+    private String location;
+    private Integer xp;
 
     // Getters
 

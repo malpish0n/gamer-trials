@@ -15,8 +15,19 @@ public class HomeController {
         return "index.html";
     }
 
+    @GetMapping("/challenges")
+    public String challenges() {
+        return "challenges";
+    }
+
     @GetMapping("/dashboard")
     public String dashboard(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        model.addAttribute("username", userDetails.getUsername());
+        return "dashboard";
+    }
+
+    @GetMapping("/profile")
+    public String profile(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         model.addAttribute("username", userDetails.getUsername());
         return "dashboard";
     }

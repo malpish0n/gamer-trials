@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/png" href="/img/logo-gt.png">
 </head>
 
 <script>
@@ -39,12 +40,12 @@
 <header class="gt-header">
     <div class="gt-container">
         <a class="gt-brand" href="/">
-            <span class="gt-logo">GT</span>
+            <img src="/img/logo-gt.png" alt="GamerTrials" class="gt-logo-img">
             <span class="gt-name">GamerTrials</span>
         </a>
 
         <nav class="gt-nav">
-            <a class="gt-link gt-active" href="#">Challenges</a>
+            <a class="gt-link" href="/challenges">Challenges</a>
             <a class="gt-link" href="#">Tournaments</a>
             <a class="gt-link" href="#">Leaderboard</a>
             <a class="gt-link" href="#">Community</a>
@@ -63,7 +64,7 @@
                 </div>
                 <div class="user-menu">
                     <a th:href="@{/dashboard}">Dashboard</a>
-                    <a href="#">Profile</a>
+                    <a th:href="@{/profile}">Profile</a>
                     <a href="#">Settings</a>
                     <a href="#">Activity</a>
                     <hr>
@@ -112,7 +113,7 @@
     <div class="gt-container">
         <div class="sec-head">
             <h2>Popular Challenges</h2>
-            <a class="gt-link" href="#">All Challenges</a>
+            <a class="gt-link" href="/challenges">All Challenges</a>
         </div>
         <div class="card-grid">
             <article class="challenge">

@@ -173,7 +173,7 @@ body{
     border-color:rgba(0,255,128,.35);
 }
 .c-head{display:flex;align-items:flex-start;justify-content:space-between}
-.c-head h3{margin:0;flex:1;min-height:2.6em;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.c-head h3{margin:0;flex:1;min-height:1.8em;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .c-meta{display:flex;gap:16px;color:var(--muted);font-size:.93rem;line-height:1.2;min-height:1.2em}
 .challenge>p{margin:6px 0 8px;color:var(--muted);line-height:1.3;min-height:2.6em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 

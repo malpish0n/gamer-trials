@@ -252,13 +252,13 @@ body{
     right: 0;
     top: 100%;
     margin-top: 2px;
-    background: var(--card);
+    background: var(--card-2);
     border: 1px solid var(--line);
-    border-radius: var(--radius);
+    border-radius: 12px;
     box-shadow: var(--shadow);
     min-width: 170px;
-    padding: 6px 0;
-    z-index: 20;
+    padding: 10px 0;
+    z-index: 9999;
 }
 
 .user-menu a {

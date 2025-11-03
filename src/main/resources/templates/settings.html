@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>GamerTrials — Settings</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/png" href="/img/logo-gt.png">
+</head>
+<body>
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<section class="gt-section">
+    <div class="gt-container" style="max-width:840px">
+        <div class="card" style="background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)">
+            <h1 style="margin:0 0 14px">Account Settings</h1>
+            <p class="auth-subtext" style="margin:0 0 16px">Update your public profile information.</p>
+
+            <div th:if="${error}" class="alert" style="background:#ffe2e2;color:#a40000;padding:10px;border-radius:8px;margin-bottom:12px" th:text="${error}">Error</div>
+            <div th:if="${success}" class="alert" style="background:#e6ffed;color:#046b39;padding:10px;border-radius:8px;margin-bottom:12px" th:text="${success}">Saved</div>
+
+            <form th:action="@{/settings}" th:object="${user}" method="post" style="display:grid;gap:14px">
+                <div class="input-group">
+                    <label for="avatarUrl">Avatar URL</label>
+                    <input id="avatarUrl" name="avatarUrl" type="url" placeholder="https://..." th:value="*{avatarUrl}">
+                </div>
+
+                <div class="input-group">
+                    <label for="location">Country</label>
+                    <input id="location" name="location" type="text" placeholder="e.g. Poland" th:value="*{location}">
+                </div>
+
+                <div class="input-group">
+                    <label for="birthDate">Birth date</label>
+                    <input id="birthDate" name="birthDate" type="date" th:value="*{birthDate}">
+                </div>
+
+                <div class="input-group">
+                    <label for="bio">Bio</label>
+                    <textarea id="bio" name="bio" rows="4" placeholder="Tell others about you" th:text="*{bio}"></textarea>
+                </div>
+
+                <div style="display:flex;gap:10px">
+                    <a class="gt-btn ghost" href="/profile">Cancel</a>
+                    <button type="submit" class="gt-btn">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>

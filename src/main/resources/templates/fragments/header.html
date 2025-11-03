@@ -63,5 +63,61 @@
             menu.addEventListener("mouseleave", hide);
         });
     </script>
-</div>
 
+    <script>
+        // Bio word-limit: insert a small counter next to any <textarea id="bio"> and enforce 250-word limit
+        document.addEventListener('DOMContentLoaded', () => {
+            const MAX_WORDS = 250;
+
+            function countWords(str){
+                if(!str) return 0;
+                const m = str.trim().match(/\S+/g);
+                return m ? m.length : 0;
+            }
+
+            document.querySelectorAll('textarea#bio').forEach(textarea => {
+                // create counter element
+                const counter = document.createElement('div');
+                counter.className = 'bio-counter';
+                counter.setAttribute('aria-hidden','false');
+                counter.style.cssText = 'color:var(--muted);font-size:.85rem;margin-top:6px;text-align:right';
+
+                // insert after textarea
+                if(textarea.nextSibling){
+                    textarea.parentNode.insertBefore(counter, textarea.nextSibling);
+                } else {
+                    textarea.parentNode.appendChild(counter);
+                }
+
+                const update = () => {
+                    const words = countWords(textarea.value);
+                    if(words > MAX_WORDS){
+                        // trim to MAX_WORDS words
+                        const trimmed = textarea.value.trim().match(/\S+/g).slice(0, MAX_WORDS).join(' ');
+                        textarea.value = trimmed;
+                    }
+                    const current = countWords(textarea.value);
+                    counter.textContent = `${current}/${MAX_WORDS} words`;
+                };
+
+                // initial update
+                update();
+
+                // on input or paste update the counter and enforce limit
+                textarea.addEventListener('input', update);
+                textarea.addEventListener('paste', () => setTimeout(update, 0));
+
+                // ensure at submit the value is trimmed to MAX_WORDS
+                const form = textarea.closest('form');
+                if(form){
+                    form.addEventListener('submit', (e) => {
+                        const wordsArr = textarea.value.trim().match(/\S+/g) || [];
+                        if(wordsArr.length > MAX_WORDS){
+                            textarea.value = wordsArr.slice(0, MAX_WORDS).join(' ');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</div>

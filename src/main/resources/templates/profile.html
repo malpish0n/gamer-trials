@@ -80,10 +80,6 @@
                             <span th:text="${countryName != null ? countryName : '—'}">—</span>
                         </div>
                     </div>
-                    <div>
-                        <div style="color:var(--muted);font-size:12px;margin-bottom:6px">Bio</div>
-                        <div style="white-space:pre-wrap" th:text="${user.bio != null && !#strings.isEmpty(user.bio) ? user.bio : '—'}">—</div>
-                    </div>
                     <div th:if="${age != null}">
                         <div style="color:var(--muted);font-size:12px;margin-bottom:6px">Age</div>
                         <div th:text="${age}">—</div>

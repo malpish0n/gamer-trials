@@ -26,9 +26,15 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute("user") User user) {
-        authService.registerUser(user);
-        return "redirect:/login";
+    public String registerUser(@ModelAttribute("user") User user, Model model) {
+        try {
+            authService.registerUser(user);
+            return "redirect:/login";
+        } catch (RuntimeException ex) {
+            model.addAttribute("user", user);
+            model.addAttribute("error", ex.getMessage());
+            return "register";
+        }
     }
 
     @GetMapping("/login")

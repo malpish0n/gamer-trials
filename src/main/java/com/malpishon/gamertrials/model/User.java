@@ -7,6 +7,12 @@ import java.time.LocalDate;
 @Table(name = "users")
 public class User {
 
+    public User() {
+        this.xp = 0;
+        this.level = 1;
+        this.showBirthDate = false;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,6 +26,14 @@ public class User {
     private String bio;
     private String location;
     private Integer xp;
+    private Integer level;
+    @Transient
+    private boolean showBirthDate;
+    @Transient
+    private Integer xpToNextLevel;
+    @Transient
+    private Integer age;
+
 
     // Getters
 
@@ -35,6 +49,18 @@ public class User {
 
     public LocalDate getBirthDate() { return birthDate; }
 
+    public String getAvatarUrl() { return avatarUrl; }
+
+    public String getBio() { return bio; }
+
+    public String getLocation() { return location; }
+
+    public Integer getXp() { return xp; }
+
+    public Integer getLevel() { return level; }
+
+    public boolean isShowBirthDate() { return showBirthDate; }
+
     // Setters
 
     public void setId(Long id) { this.id = id; }
@@ -48,4 +74,16 @@ public class User {
     public void setRole(String role) { this.role = role; }
 
     public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
+
+    public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
+
+    public void setBio(String bio) { this.bio = bio; }
+
+    public void setLocation(String location) { this.location = location; }
+
+    public void setXp(Integer xp) { this.xp = xp; }
+
+    public void setLevel(Integer level) { this.level = level; }
+
+    public void setShowBirthDate(boolean showBirthDate) { this.showBirthDate = showBirthDate; }
 }

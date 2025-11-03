@@ -19,12 +19,24 @@ public class AuthService {
     }
 
     public void registerUser(User user) {
+        // Normalize input
+        if (user.getEmail() != null) {
+            user.setEmail(user.getEmail().trim().toLowerCase());
+        }
+        if (user.getUsername() != null) {
+            user.setUsername(user.getUsername().trim());
+        }
 
-        if (userRepository.existsByEmail(user.getEmail())) {
+        // Basic defaults
+        if (user.getXp() == null) user.setXp(0);
+        if (user.getLevel() == null) user.setLevel(1);
+
+        // Uniqueness checks
+        if (user.getEmail() != null && userRepository.existsByEmailIgnoreCase(user.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
 
-        if (userRepository.existsByUsername(user.getUsername())) {
+        if (user.getUsername() != null && userRepository.existsByUsernameIgnoreCase(user.getUsername())) {
             throw new RuntimeException("Username already exists");
         }
 
@@ -34,6 +46,5 @@ public class AuthService {
         user.setPassword(encodedPassword);
 
         userRepository.save(user);
-
     }
 }

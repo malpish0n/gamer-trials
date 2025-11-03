@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.*;
@@ -62,12 +61,14 @@ public class HomeController {
         model.addAttribute("age", age);
         model.addAttribute("countryName", cd.name);
         model.addAttribute("countryFlag", cd.flag);
+        model.addAttribute("rank", 214);
+        model.addAttribute("badgeCount", 0);
+        model.addAttribute("achievementCount", 0);
         return "profile";
     }
 
     @PostMapping("/dashboard/edit")
     public String updateProfile(@ModelAttribute("user") User formUser,
-                                @RequestParam(value = "avatar", required = false) MultipartFile avatar,
                                 @RequestParam(value = "profilePrivate", required = false) Boolean profilePrivate,
                                 Principal principal) {
         if (principal == null) return "redirect:/login";
@@ -79,26 +80,6 @@ public class HomeController {
             user.setLocation(formUser.getLocation().trim());
         }
 
-        try {
-            if (avatar != null && !avatar.isEmpty()) {
-                String baseDir = System.getProperty("user.home") + "/gamer-trials/uploads/";
-                java.nio.file.Path uploadPath = java.nio.file.Paths.get(baseDir);
-                java.nio.file.Files.createDirectories(uploadPath);
-
-                String original = avatar.getOriginalFilename();
-                String ext = "";
-                if (original != null && original.contains(".")) {
-                    ext = original.substring(original.lastIndexOf('.'));
-                }
-                String safeName = "avatar-" + user.getId() + "-" + System.currentTimeMillis() + ext;
-                java.nio.file.Path target = uploadPath.resolve(safeName);
-                try (java.io.InputStream in = avatar.getInputStream()) {
-                    java.nio.file.Files.copy(in, target, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
-                }
-                user.setAvatarUrl("/uploads/" + safeName);
-            }
-        } catch (Exception ex) {
-        }
 
         userRepository.save(user);
         return "redirect:/dashboard?updated=true";

@@ -42,7 +42,6 @@ public class HomeController {
         User user = userRepository.findByUsername(principal.getName()).orElseThrow();
         model.addAttribute("username", user.getUsername());
         model.addAttribute("user", user);
-        // Countries list for select
         model.addAttribute("countries", getCountryOptions());
         return "dashboard";
     }
@@ -63,7 +62,7 @@ public class HomeController {
         model.addAttribute("countryFlag", cd.flag);
         model.addAttribute("rank", 214);
         model.addAttribute("badgeCount", 0);
-        model.addAttribute("achievementCount", 0);
+        model.addAttribute("trophyCount", 0);
         return "profile";
     }
 
@@ -114,13 +113,11 @@ public class HomeController {
     private CountryDisplay resolveCountryDisplay(String stored){
         if (stored == null || stored.isBlank()) return new CountryDisplay(null, "");
         String s = stored.trim();
-        // If looks like ISO code
         if (s.length()==2 && s.equals(s.toUpperCase(Locale.ROOT))){
             Locale loc = new Locale("", s);
             String name = loc.getDisplayCountry(Locale.ENGLISH);
             return new CountryDisplay(name!=null && !name.isEmpty()?name:s, flagEmoji(s));
         }
-        // Try to match by name
         for (String code : Locale.getISOCountries()){
             Locale loc = new Locale("", code);
             String name = loc.getDisplayCountry(Locale.ENGLISH);

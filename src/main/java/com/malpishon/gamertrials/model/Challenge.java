@@ -39,9 +39,9 @@ public class Challenge {
 
     @ManyToMany
     @JoinTable(
-            name = "challenge_achievements",
+            name = "challenge_trophies",
             joinColumns = @JoinColumn(name = "challenge_id"),
-            inverseJoinColumns = @JoinColumn(name = "achievement_id")
+            inverseJoinColumns = @JoinColumn(name = "trophy_id")
     )
-    private List<Achievement> rewardAchievements;
+    private List<Trophy> rewardTrophies;
 }

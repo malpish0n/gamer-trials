@@ -31,7 +31,6 @@ public class AuthService {
         if (user.getXp() == null) user.setXp(0);
         if (user.getLevel() == null) user.setLevel(1);
 
-        // Uniqueness checks
         if (user.getEmail() != null && userRepository.existsByEmailIgnoreCase(user.getEmail())) {
             throw new RuntimeException("Email already exists");
         }

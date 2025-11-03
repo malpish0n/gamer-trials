@@ -52,7 +52,6 @@ public class UserService {
 
     public Integer getPublicAge(User user) {
         if (user == null) return null;
-        if (!user.isShowBirthDate()) return null;
         LocalDate birth = user.getBirthDate();
         if (birth == null) return null;
         LocalDate now = LocalDate.now();

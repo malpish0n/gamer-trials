@@ -22,9 +22,12 @@
                 <div th:if="${user.avatarUrl == null || #strings.isEmpty(user.avatarUrl)}" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#0b0c0d;font-size:28px" th:text="${#strings.substring(user.username,0,1)?.toUpperCase()}">U</div>
                 <div>
                     <div style="font-weight:700;font-size:18px" th:text="${user.username}">User</div>
-                    <div style="color:var(--muted);font-size:13px">
+                    <div style="color:var(--muted);font-size:13px;margin-top:4px">
                         <span th:text="${countryFlag}"></span>
                         <span th:text="${countryName != null ? countryName : 'Unknown location'}">Unknown location</span>
+                    </div>
+                    <div th:if="${age != null}" style="color:var(--muted);font-size:13px;margin-top:2px">
+                        <span th:text="${age} + ' years old'">Age</span>
                     </div>
                 </div>
             </div>
@@ -42,10 +45,6 @@
                     <div style="color:var(--muted);font-size:12px">To next level</div>
                     <div style="font-weight:800;font-size:20px" th:text="${xpToNext}">0</div>
                 </div>
-                <div class="mini" style="background:var(--card-2);border-radius:12px;padding:14px" th:if="${age != null}">
-                    <div style="color:var(--muted);font-size:12px">Age</div>
-                    <div style="font-weight:800;font-size:20px" th:text="${age}">--</div>
-                </div>
             </div>
 
             <div style="margin-top:18px">
@@ -60,29 +59,12 @@
                 <div>
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
                         <div>
-                            <strong th:text="'Level ' + (user.level != null ? user.level : 1)">Level 1</strong>
+                            <strong>Level <span th:text="${user.level != null ? user.level : 1}">1</span></strong>
                         </div>
-                        <div class="pill" th:text="${xpToNext} + ' XP to next level'">0 XP to next level</div>
+                        <div class="pill"><span th:text="${xpToNext}">0</span> XP to next level</div>
                     </div>
                     <div style="height:10px;background:var(--line);border-radius:8px;overflow:hidden">
                         <div style="height:100%;background:var(--accent)" th:style="'width:' + ${xpPct} + '%'"></div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="card" style="background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)">
-                <h2 style="margin:0 0 10px">Public info</h2>
-                <div style="display:grid;gap:14px">
-                    <div>
-                        <div style="color:var(--muted);font-size:12px;margin-bottom:6px">Country</div>
-                        <div style="display:flex;align-items:center;gap:8px">
-                            <span th:text="${countryFlag}"></span>
-                            <span th:text="${countryName != null ? countryName : '—'}">—</span>
-                        </div>
-                    </div>
-                    <div th:if="${age != null}">
-                        <div style="color:var(--muted);font-size:12px;margin-bottom:6px">Age</div>
-                        <div th:text="${age}">—</div>
                     </div>
                 </div>
             </section>

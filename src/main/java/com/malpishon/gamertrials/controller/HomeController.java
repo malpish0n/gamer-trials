@@ -68,11 +68,13 @@ public class HomeController {
     @PostMapping("/dashboard/edit")
     public String updateProfile(@ModelAttribute("user") User formUser,
                                 @RequestParam(value = "avatar", required = false) MultipartFile avatar,
+                                @RequestParam(value = "profilePrivate", required = false) Boolean profilePrivate,
                                 Principal principal) {
         if (principal == null) return "redirect:/login";
         User user = userRepository.findByUsername(principal.getName()).orElseThrow();
         user.setBio(formUser.getBio());
         user.setBirthDate(formUser.getBirthDate());
+        user.setProfilePrivate(profilePrivate != null ? profilePrivate : false);
         if (formUser.getLocation() != null && !formUser.getLocation().isBlank()) {
             user.setLocation(formUser.getLocation().trim());
         }

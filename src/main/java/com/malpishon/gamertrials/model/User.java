@@ -11,6 +11,7 @@ public class User {
         this.xp = 0;
         this.level = 1;
         this.showBirthDate = false;
+        this.profilePrivate = false;
     }
 
     @Id
@@ -27,6 +28,7 @@ public class User {
     private String location;
     private Integer xp;
     private Integer level;
+    private Boolean profilePrivate;
     @Transient
     private boolean showBirthDate;
     @Transient
@@ -61,6 +63,8 @@ public class User {
 
     public boolean isShowBirthDate() { return showBirthDate; }
 
+    public Boolean getProfilePrivate() { return profilePrivate; }
+
     // Setters
 
     public void setId(Long id) { this.id = id; }
@@ -86,4 +90,6 @@ public class User {
     public void setLevel(Integer level) { this.level = level; }
 
     public void setShowBirthDate(boolean showBirthDate) { this.showBirthDate = showBirthDate; }
+
+    public void setProfilePrivate(Boolean profilePrivate) { this.profilePrivate = profilePrivate; }
 }

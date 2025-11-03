@@ -34,16 +34,20 @@
 
             <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
                 <div class="mini" style="background:var(--card-2);border-radius:12px;padding:14px">
-                    <div style="color:var(--muted);font-size:12px">Level</div>
-                    <div style="font-weight:800;font-size:20px" th:text="${user.level != null ? user.level : 1}">1</div>
+                    <div style="color:var(--muted);font-size:12px">Rank</div>
+                    <div style="font-weight:800;font-size:20px" th:text="${rank != null ? '#' + rank : '#-'}">-</div>
                 </div>
                 <div class="mini" style="background:var(--card-2);border-radius:12px;padding:14px">
                     <div style="color:var(--muted);font-size:12px">Total XP</div>
                     <div style="font-weight:800;font-size:20px" th:text="${user.xp != null ? user.xp : 0}">0</div>
                 </div>
                 <div class="mini" style="background:var(--card-2);border-radius:12px;padding:14px">
-                    <div style="color:var(--muted);font-size:12px">To next level</div>
-                    <div style="font-weight:800;font-size:20px" th:text="${xpToNext}">0</div>
+                    <div style="color:var(--muted);font-size:12px">Badges</div>
+                    <div style="font-weight:800;font-size:20px" th:text="${badgeCount != null ? badgeCount : 0}">0</div>
+                </div>
+                <div class="mini" style="background:var(--card-2);border-radius:12px;padding:14px">
+                    <div style="color:var(--muted);font-size:12px">Trophies</div>
+                    <div style="font-weight:800;font-size:20px" th:text="${trophyCount != null ? trophyCount : 0}">0</div>
                 </div>
             </div>
 

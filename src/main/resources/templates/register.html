@@ -16,15 +16,17 @@
         <h1>Create your account</h1>
         <p class="auth-subtext">Join the community and start earning XP today.</p>
 
-        <form th:action="@{/register}" method="post" class="auth-form">
+        <div th:if="${error}" class="alert" style="background:#ffe2e2;color:#a40000;padding:10px;border-radius:8px;margin-bottom:12px" th:text="${error}">Error</div>
+
+        <form th:action="@{/register}" method="post" class="auth-form" th:object="${user}">
             <div class="input-group">
                 <label for="username">Username</label>
-                <input id="username" name="username" type="text" required>
+                <input id="username" name="username" type="text" th:value="*{username}" required>
             </div>
 
             <div class="input-group">
                 <label for="email">Email</label>
-                <input id="email" name="email" type="email" required>
+                <input id="email" name="email" type="email" th:value="*{email}" required>
             </div>
 
             <div class="input-group">
@@ -39,7 +41,7 @@
 
             <div class="input-group">
                 <label for="birthDate">Birth date</label>
-                <input type="date" id="birthDate" name="birthDate" required>
+                <input type="date" id="birthDate" name="birthDate" th:value="*{birthDate}" required>
             </div>
 
             <button type="submit" class="gt-btn wide">Create Account</button>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>GamerTrials — Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/png" href="/img/logo-gt.png">
+</head>
+<body>
+<div th:replace="fragments/header :: siteHeader"></div>
+
+<section class="gt-section">
+    <div class="gt-container" style="display:grid;grid-template-columns:320px 1fr;gap:24px;align-items:start">
+        <aside class="card" style="background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)">
+            <div style="display:flex;align-items:center;gap:16px">
+                <div th:if="${user.avatarUrl != null && !#strings.isEmpty(user.avatarUrl)}" style="width:72px;height:72px;border-radius:50%;overflow:hidden;background:var(--card-2)">
+                    <img th:src="${user.avatarUrl}" alt="Avatar" style="width:100%;height:100%;object-fit:cover">
+                </div>
+                <div th:if="${user.avatarUrl == null || #strings.isEmpty(user.avatarUrl)}" style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#0b0c0d;font-size:28px" th:text="${#strings.substring(user.username,0,1)?.toUpperCase()}">U</div>
+                <div>
+                    <div style="font-weight:700;font-size:18px" th:text="${user.username}">User</div>
+                    <div style="color:var(--muted);font-size:13px;margin-top:4px">
+                        <span th:text="${countryFlag}"></span>
+                        <span th:text="${countryName != null ? countryName : 'Unknown location'}">Unknown location</span>
+                    </div>
+                    <div th:if="${age != null}" style="color:var(--muted);font-size:13px;margin-top:2px">
+                        <span th:text="${age} + ' years old'">Age</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <div class="mini" style="background:var(--card-2);border-radius:12px;padding:14px">
+                    <div style="color:var(--muted);font-size:12px">Level</div>
+                    <div style="font-weight:800;font-size:20px" th:text="${user.level != null ? user.level : 1}">1</div>
+                </div>
+                <div class="mini" style="background:var(--card-2);border-radius:12px;padding:14px">
+                    <div style="color:var(--muted);font-size:12px">Total XP</div>
+                    <div style="font-weight:800;font-size:20px" th:text="${user.xp != null ? user.xp : 0}">0</div>
+                </div>
+                <div class="mini" style="background:var(--card-2);border-radius:12px;padding:14px">
+                    <div style="color:var(--muted);font-size:12px">To next level</div>
+                    <div style="font-weight:800;font-size:20px" th:text="${xpToNext}">0</div>
+                </div>
+            </div>
+
+            <div style="margin-top:18px">
+                <div style="font-weight:700;margin-bottom:8px">Bio</div>
+                <p style="color:var(--muted);margin:0" th:text="${user.bio != null && !#strings.isEmpty(user.bio) ? user.bio : 'No bio yet.'}">No bio yet.</p>
+            </div>
+        </aside>
+
+        <main style="display:grid;gap:24px">
+            <section class="card" style="background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)">
+                <h2 style="margin:0 0 10px">Progress</h2>
+                <div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                        <div>
+                            <strong>Level <span th:text="${user.level != null ? user.level : 1}">1</span></strong>
+                        </div>
+                        <div class="pill"><span th:text="${xpToNext}">0</span> XP to next level</div>
+                    </div>
+                    <div style="height:10px;background:var(--line);border-radius:8px;overflow:hidden">
+                        <div style="height:100%;background:var(--accent)" th:style="'width:' + ${xpPct} + '%'"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</section>
+
+</body>
+</html>

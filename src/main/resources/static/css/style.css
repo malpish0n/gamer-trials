@@ -97,11 +97,7 @@ body{
 .gt-btn.wide{width:100%}
 .gt-btn.full{width:100%}
 
-.gt-hero{
-    padding:64px 0 32px 0;
-    border-bottom:1px solid var(--line);
-    background:linear-gradient(180deg, rgba(0,255,128,.06), rgba(0,0,0,0));
-}
+    background: rgba(0,255,128,.06);
 .hero-grid{
     display:grid;
     grid-template-columns: 1.2fr .8fr;
@@ -217,90 +213,33 @@ body{
 .foot-nav a{color:var(--muted);text-decoration:none}
 .foot-nav a:hover{color:var(--accent)}
 
-@media (max-width:1100px){
-    .hero-grid{grid-template-columns:1fr}
-    .hero-right{order:-1}
-    .card-grid{grid-template-columns:repeat(2,1fr)}
-    .board .row{grid-template-columns:48px 1fr 110px 110px}
+/* Custom scrollbar - dark track, green thumb to match theme (WebKit) */
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
 }
-@media (max-width:640px){
-    .gt-header .gt-container{height:auto;padding:14px 24px;gap:12px;flex-wrap:wrap}
-    .gt-actions{display:none}
-    .hero-left h1{font-size:36px}
-    .card-grid{grid-template-columns:1fr}
+::-webkit-scrollbar-track {
+    background: rgba(8,12,10,0.65); /* ciemny tor */
+    border-radius: 999px;
 }
-.gt-user {
-    position: relative;
-    display: inline-block;
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--accent-2), var(--accent)); /* zielony thumb */
+    border-radius: 999px;
+    border: 3px solid rgba(0,0,0,0.6); /* ciemna obwódka */
+    background-clip: padding-box;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.5);
 }
-
-.user-trigger {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 10px;
-    border-radius: 8px;
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--accent), var(--accent-2));
 }
 
-.user-trigger:hover {
-    background: rgba(255,255,255,.04);
+/* Firefox */
+html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,255,128,0.95) rgba(8,12,10,0.65); /* thumb then track */
 }
 
-.user-menu {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 100%;
-    margin-top: 2px;
-    background: var(--card-2);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    min-width: 170px;
-    padding: 10px 0;
-    z-index: 9999;
+/* Optional: enable smooth native scrolling on supported platforms */
+body {
+    -webkit-overflow-scrolling: touch;
 }
-
-.user-menu a {
-    display: block;
-    padding: 10px 16px;
-    color: var(--muted);
-    text-decoration: none;
-    transition: background 0.15s, color 0.15s;
-}
-
-.user-menu a:hover {
-    background: rgba(255,255,255,.05);
-    color: var(--accent);
-}
-
-.user-menu hr {
-    border: none;
-    border-top: 1px solid var(--line);
-    margin: 6px 0;
-}
-
-.c-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 12px;
-}
-
-.c-head h3 {
-    margin: 0;
-    line-height: 1.2;
-}
-
-.c-head .pill {
-    display: inline-flex;
-    align-items: center;
-    height: 28px;
-    padding: 0 10px;
-    white-space: nowrap;
-    line-height: 1;
-}
-
-
-
-

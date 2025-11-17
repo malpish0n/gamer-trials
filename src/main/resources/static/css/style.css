@@ -14,6 +14,11 @@
     --glow:0 0 0 0 rgba(0,255,128,0);
 }
 
+html, body {
+    background-color: var(--bg);
+    overscroll-behavior: none;
+}
+
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
@@ -97,7 +102,12 @@ body{
 .gt-btn.wide{width:100%}
 .gt-btn.full{width:100%}
 
-    background: rgba(0,255,128,.06);
+.gt-hero{
+    padding:64px 0 32px 0;
+    border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg, rgba(0,255,128,.06), rgba(0,0,0,0));
+}
+
 .hero-grid{
     display:grid;
     grid-template-columns: 1.2fr .8fr;
@@ -174,8 +184,8 @@ body{
 .challenge>p{margin:6px 0 8px;color:var(--muted);line-height:1.3;min-height:2.6em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
 @media (max-width:600px){
-  .c-head h3{min-height:1.3em;-webkit-line-clamp:1}
-  .challenge>p{min-height:1.3em;-webkit-line-clamp:1}
+    .c-head h3{min-height:1.3em;-webkit-line-clamp:1}
+    .challenge>p{min-height:1.3em;-webkit-line-clamp:1}
 }
 .challenge .gt-btn.full{margin-top:auto}
 

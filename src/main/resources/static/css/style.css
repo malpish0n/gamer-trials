@@ -87,7 +87,7 @@ body{
 .gt-link:hover{color:var(--text);background:rgba(255,255,255,.04)}
 .gt-active{color:var(--accent)}
 
-.gt-actions{display:flex;gap:12px}
+.gt-actions{display:flex;gap:12px;align-items:center}
 .gt-btn{
     display:inline-flex;align-items:center;justify-content:center;
     padding:10px 16px;border-radius:12px;font-weight:700;
@@ -101,6 +101,54 @@ body{
 .gt-btn.xl{padding:14px 22px;font-size:1.05rem}
 .gt-btn.wide{width:100%}
 .gt-btn.full{width:100%}
+
+.gt-user{position:relative}
+.user-trigger{
+    cursor:pointer;
+    padding:8px 12px;
+    border-radius:10px;
+    transition:background .2s;
+    color:var(--text);
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+.user-trigger:hover{background:rgba(255,255,255,.04)}
+.user-trigger .arrow{
+    font-size:.85rem;
+    color:var(--muted);
+    transition:transform .2s;
+}
+.gt-user:hover .user-trigger .arrow{transform:rotate(180deg)}
+
+.user-menu{
+    display:none;
+    position:absolute;
+    top:calc(100% + 8px);
+    right:0;
+    min-width:180px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:8px;
+    box-shadow:0 10px 40px rgba(0,0,0,.5);
+    z-index:100;
+}
+.user-menu a{
+    display:block;
+    padding:10px 14px;
+    color:var(--text);
+    text-decoration:none;
+    border-radius:8px;
+    transition:background .2s, color .2s;
+    font-weight:600;
+}
+.user-menu a:hover{background:rgba(0,255,128,.1);color:var(--accent)}
+.user-menu hr{
+    border:0;
+    border-top:1px solid var(--line);
+    margin:8px 0;
+}
 
 .gt-hero{
     padding:64px 0 32px 0;

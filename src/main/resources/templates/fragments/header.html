@@ -20,17 +20,17 @@
         </nav>
 
         <div class="gt-actions">
-            <div th:if="${#authorization.expression('!isAuthenticated()')}">
+            <div th:if="${username == null}">
                 <a class="gt-btn ghost" href="/login">Log In</a>
                 <a class="gt-btn" href="/register">Join</a>
             </div>
 
-            <div class="gt-user" th:if="${#authorization.expression('isAuthenticated()')}">
-                <div class="user-trigger">
-                    <span>Hi, <strong th:text="${#authentication.name}">User</strong></span>
+            <div class="gt-user" th:if="${username != null}">
+                <div class="user-trigger" onclick="toggleUserMenu(event)">
+                    <span>Hi, <strong th:text="${username}">User</strong></span>
                     <span class="arrow">▾</span>
                 </div>
-                <div class="user-menu">
+                <div class="user-menu" id="userDropdown">
                     <a th:href="@{/dashboard}">Dashboard</a>
                     <a th:href="@{/profile}">Profile</a>
                     <a href="#">Settings</a>
@@ -41,33 +41,60 @@
             </div>
         </div>
     </div>
+
+    <script th:inline="javascript">
+        function toggleUserMenu(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('userDropdown');
+            if (menu) {
+                const isVisible = menu.style.display === 'block';
+                menu.style.display = isVisible ? 'none' : 'block';
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('userDropdown');
+            const userTrigger = document.querySelector('.user-trigger');
+            if (menu && userTrigger && !userTrigger.contains(e.target) && !menu.contains(e.target)) {
+                menu.style.display = 'none';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const userTrigger = document.querySelector('.user-trigger');
+            const menu = document.getElementById('userDropdown');
+
+            if (userTrigger && menu) {
+                let hideTimer;
+
+                userTrigger.addEventListener('mouseenter', function() {
+                    clearTimeout(hideTimer);
+                    menu.style.display = 'block';
+                });
+
+                userTrigger.addEventListener('mouseleave', function() {
+                    hideTimer = setTimeout(function() {
+                        menu.style.display = 'none';
+                    }, 200);
+                });
+
+                menu.addEventListener('mouseenter', function() {
+                    clearTimeout(hideTimer);
+                    menu.style.display = 'block';
+                });
+
+                menu.addEventListener('mouseleave', function() {
+                    hideTimer = setTimeout(function() {
+                        menu.style.display = 'none';
+                    }, 200);
+                });
+            }
+        });
+    </script>
 </header>
 
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const user = document.querySelector(".gt-user");
-        if (!user) return;
-        const menu = user.querySelector(".user-menu");
-        const trigger = user.querySelector(".user-trigger");
-
-        let hideTimer;
-
-        const show = () => {
-            clearTimeout(hideTimer);
-            menu.style.display = "block";
-        };
-        const hide = () => {
-            hideTimer = setTimeout(() => {
-                menu.style.display = "none";
-            }, 150);
-        };
-
-        trigger.addEventListener("mouseenter", show);
-        trigger.addEventListener("mouseleave", hide);
-        menu.addEventListener("mouseenter", show);
-        menu.addEventListener("mouseleave", hide);
-    });
-</script>
+</body>
+</html>
 
 </body>
 </html>

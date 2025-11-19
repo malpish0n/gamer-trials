@@ -26,6 +26,13 @@ public class HomeController {
         this.userService = userService;
     }
 
+    @ModelAttribute
+    public void addUserToModel(Model model, Principal principal) {
+        if (principal != null) {
+            model.addAttribute("username", principal.getName());
+        }
+    }
+
     @GetMapping("/")
     public String index() {
         return "index";

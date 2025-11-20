@@ -35,6 +35,8 @@
                     <a th:href="@{/profile}">Profile</a>
                     <a href="#">Settings</a>
                     <a href="#">Activity</a>
+                    <hr th:if="${userRole == 'ADMIN'}">
+                    <a th:href="@{/challenges/new}" th:if="${userRole == 'ADMIN'}" style="color: #00ff88;">Create Challenge</a>
                     <hr>
                     <a href="/logout">Logout</a>
                 </div>
@@ -92,9 +94,6 @@
         });
     </script>
 </header>
-
-</body>
-</html>
 
 </body>
 </html>

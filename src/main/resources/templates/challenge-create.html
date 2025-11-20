@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create Challenge — GamerTrials</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/png" href="/img/logo-gt.png">
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #00ff88;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(0,255,136,0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+        }
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+<main class="gt-container">
+    <div class="form-container">
+        <h1>Create New Challenge</h1>
+        <p style="margin-bottom: 2rem; color: rgba(255,255,255,0.7);">Fill in the details to create a new challenge for the community.</p>
+
+        <form th:action="@{/challenges/new}" method="post" th:object="${challenge}">
+            <div class="form-group">
+                <label for="name">Challenge Name *</label>
+                <input type="text" id="name" name="name" th:field="*{name}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description *</label>
+                <textarea id="description" name="description" th:field="*{description}" required></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="game">Game *</label>
+                    <select id="game" name="game" th:field="*{game}" required onchange="toggleCustomGame()">
+                        <option value="">Select Game</option>
+                        <option th:each="gameOption : ${games}" th:value="${gameOption}" th:text="${gameOption}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="customGameGroup" style="display: none;">
+                    <label for="customGame">Custom Game Name</label>
+                    <input type="text" id="customGame" name="customGame" placeholder="Enter game name">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="category">Category *</label>
+                    <select id="category" name="category" th:field="*{category}" required>
+                        <option value="">Select Category</option>
+                        <option value="FPS">FPS</option>
+                        <option value="MOBA">MOBA</option>
+                        <option value="RPG">RPG</option>
+                        <option value="Strategy">Strategy</option>
+                        <option value="Battle Royale">Battle Royale</option>
+                        <option value="Racing">Racing</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="platform">Platform *</label>
+                    <select id="platform" name="platform" th:field="*{platform}" required>
+                        <option value="">Select Platform</option>
+                        <option value="PC">PC</option>
+                        <option value="PlayStation 4">PlayStation 4</option>
+                        <option value="PlayStation 5">PlayStation 5</option>
+                        <option value="Xbox One">Xbox One</option>
+                        <option value="Xbox Series X|S">Xbox Series X|S</option>
+                        <option value="Nintendo Switch">Nintendo Switch</option>
+                        <option value="Cross-Platform">Cross-Platform</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="difficulty">Difficulty *</label>
+                    <select id="difficulty" name="difficulty" th:field="*{difficulty}" required>
+                        <option value="">Select Difficulty</option>
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                        <option value="Expert">Expert</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="type">Type *</label>
+                    <select id="type" name="type" th:field="*{type}" required>
+                        <option value="">Select Type</option>
+                        <option value="Daily">Daily</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="Seasonal">Seasonal</option>
+                        <option value="No Time Limit">No Time Limit</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="rewardXp">Reward XP *</label>
+                    <input type="number" id="rewardXp" name="rewardXp" th:field="*{rewardXp}" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Status *</label>
+                    <select id="status" name="status" th:field="*{status}" required>
+                        <option value="ACTIVE">Active</option>
+                        <option value="UPCOMING">Upcoming</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dateOfClosing">Closing Date (Optional)</label>
+                    <input type="date" id="dateOfClosing" name="dateOfClosing" th:field="*{dateOfClosing}">
+                </div>
+
+                <div class="form-group">
+                    <label for="visibility">Visibility *</label>
+                    <select id="visibility" name="visibility" required>
+                        <option value="PUBLIC" selected>Public</option>
+                        <option value="FRIENDS_ONLY">Friends Only</option>
+                        <option value="INVITE_ONLY">Invite Only</option>
+                        <option value="PRIVATE">Private</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="gt-btn xl" style="flex: 1;">Create Challenge</button>
+                <a class="gt-btn ghost xl" href="/challenges" style="flex: 1; text-align: center; line-height: 3rem;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer class="gt-footer">
+    <div class="gt-container">
+        <div>© 2025 GamerTrials — All rights reserved</div>
+        <nav class="foot-nav">
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+            <a href="#">Contact</a>
+        </nav>
+    </div>
+</footer>
+
+<script>
+    function toggleCustomGame() {
+        const gameSelect = document.getElementById('game');
+        const customGameGroup = document.getElementById('customGameGroup');
+        const customGameInput = document.getElementById('customGame');
+
+        if (gameSelect.value === 'Other') {
+            customGameGroup.style.display = 'block';
+            customGameInput.required = true;
+        } else {
+            customGameGroup.style.display = 'none';
+            customGameInput.required = false;
+            customGameInput.value = '';
+        }
+    }
+
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const gameSelect = document.getElementById('game');
+        const customGameInput = document.getElementById('customGame');
+
+        if (gameSelect.value === 'Other' && customGameInput.value.trim()) {
+            gameSelect.value = customGameInput.value.trim();
+        }
+    });
+</script>
+
+</body>
+</html>
+

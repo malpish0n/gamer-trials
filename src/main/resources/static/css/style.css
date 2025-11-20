@@ -207,7 +207,7 @@ body{
 .gt-section{padding:64px 0;border-bottom:1px solid var(--line)}
 .gt-section.alt{background:#0e1012}
 .sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-.sec-head h2{margin:0;font-size:1.6rem;letter-spacing:.3px}
+.sec-head h1,.sec-head h2{margin:0;font-size:1.6rem;letter-spacing:.3px}
 .card-grid{
     display:grid;
     grid-template-columns:repeat(4,1fr);

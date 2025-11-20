@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${challenge.name} + ' — GamerTrials'">Challenge — GamerTrials</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/png" href="/img/logo-gt.png">
+</head>
+<body>
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+<main class="gt-container">
+    <section class="gt-section">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <a class="gt-link" href="/challenges" style="display: inline-block; margin-bottom: 1rem;">← Back to Challenges</a>
+
+            <div class="hero-card" style="margin-bottom: 2rem;">
+                <div class="hc-top">
+                    <span class="badge" th:text="${challenge.status}">ACTIVE</span>
+                    <h1 th:text="${challenge.name}">Challenge Name</h1>
+                    <p th:text="${challenge.description}">Challenge description</p>
+                </div>
+                <div class="hc-bottom">
+                    <div class="pill" th:text="${challenge.type}">Solo</div>
+                    <div class="pill" th:text="${challenge.difficulty}">Hard</div>
+                    <div class="pill" th:text="'+' + ${challenge.rewardXp} + ' XP'">+250 XP</div>
+                </div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 2rem; margin-bottom: 2rem;">
+                <h2 style="margin-bottom: 1rem;">Challenge Details</h2>
+                <div style="display: grid; gap: 1rem;">
+                    <div>
+                        <strong>Game:</strong> <span th:text="${challenge.game}">CS:GO</span>
+                    </div>
+                    <div th:if="${challenge.platform != null}">
+                        <strong>Platform:</strong> <span th:text="${challenge.platform}">PC</span>
+                    </div>
+                    <div>
+                        <strong>Category:</strong> <span th:text="${challenge.category}">FPS</span>
+                    </div>
+                    <div>
+                        <strong>Difficulty:</strong> <span th:text="${challenge.difficulty}">Hard</span>
+                    </div>
+                    <div>
+                        <strong>Type:</strong> <span th:text="${challenge.type}">Monthly</span>
+                    </div>
+                    <div>
+                        <strong>Reward XP:</strong> <span th:text="${challenge.rewardXp}">250</span>
+                    </div>
+                    <div>
+                        <strong>Status:</strong> <span th:text="${challenge.status}">ACTIVE</span>
+                    </div>
+                    <div>
+                        <strong>Created:</strong> <span th:text="${challenge.dateOfCreation}">2025-01-01</span>
+                    </div>
+                    <div th:if="${challenge.dateOfClosing != null}">
+                        <strong>Closing Date:</strong> <span th:text="${challenge.dateOfClosing}">2025-12-31</span>
+                    </div>
+                    <div th:if="${challenge.winner != null}">
+                        <strong>Winner:</strong> <span th:text="${challenge.winner}">PlayerName</span>
+                    </div>
+                    <div>
+                        <strong>Visibility:</strong>
+                        <span th:switch="${challenge.visibility}">
+                            <span th:case="'PUBLIC'">Public</span>
+                            <span th:case="'FRIENDS_ONLY'">Friends Only</span>
+                            <span th:case="'INVITE_ONLY'">Invite Only</span>
+                            <span th:case="'PRIVATE'">Private</span>
+                            <span th:case="*" th:text="${challenge.isPublic() ? 'Public' : 'Private'}">Public</span>
+                        </span>
+                    </div>
+                    <div th:if="${challenge.creator != null}">
+                        <strong>Created by:</strong> <span th:text="${challenge.creator.username}">Admin</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <a class="gt-btn xl" href="#" style="flex: 1;">Join Challenge</a>
+                <a class="gt-btn ghost xl" href="/challenges" style="flex: 1;">Cancel</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="gt-footer">
+    <div class="gt-container">
+        <div>© 2025 GamerTrials — All rights reserved</div>
+        <nav class="foot-nav">
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+            <a href="#">Contact</a>
+        </nav>
+    </div>
+</footer>
+
+</body>
+</html>
+

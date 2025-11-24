@@ -26,15 +26,22 @@ public class HomeController {
         this.userService = userService;
     }
 
+    @ModelAttribute
+    public void addUserToModel(Model model, Principal principal) {
+        if (principal != null) {
+            model.addAttribute("username", principal.getName());
+            User user = userRepository.findByUsername(principal.getName()).orElse(null);
+            if (user != null) {
+                model.addAttribute("userRole", user.getRole());
+            }
+        }
+    }
+
     @GetMapping("/")
     public String index() {
         return "index";
     }
 
-    @GetMapping("/challenges")
-    public String challenges() {
-        return "challenges";
-    }
 
     @GetMapping("/dashboard")
     public String dashboard(Model model, Principal principal) {

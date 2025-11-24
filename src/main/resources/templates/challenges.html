@@ -4,68 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>All Challenges — GamerTrials</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/png" href="/img/logo-gt.png">
 </head>
 <body>
-<div th:replace="fragments/header :: siteHeader"></div>
+<div th:replace="~{fragments/header :: siteHeader}"></div>
 
 <main class="gt-container">
     <section class="gt-section">
         <div class="sec-head">
             <h1>All Challenges</h1>
+            <a class="gt-btn" href="/challenges/new" th:if="${userRole == 'ADMIN'}">Create Challenge</a>
         </div>
-        <div class="card-grid">
-            <article class="challenge">
+        <div class="card-grid" th:if="${challenges != null and !challenges.isEmpty()}">
+            <article class="challenge" th:each="challenge : ${challenges}">
                 <div class="c-head">
-                    <h3>Sniper Elite</h3>
-                    <span class="pill">+180 XP</span>
+                    <h3 th:text="${challenge.name}">Challenge Name</h3>
+                    <span class="pill" th:text="'+' + ${challenge.rewardXp} + ' XP'">+180 XP</span>
                 </div>
-                <p>Get 20 consecutive headshots. Precision matters.</p>
+                <p th:text="${challenge.description}">Challenge description</p>
                 <div class="c-meta">
-                    <span>Avg. Time: 12 min</span>
-                    <span>Completed: 3.1k</span>
+                    <span th:text="'Game: ' + ${challenge.game}">Game: CS:GO</span>
+                    <span th:text="'Difficulty: ' + ${challenge.difficulty}">Difficulty: Hard</span>
                 </div>
-                <a class="gt-btn full" href="#">Join</a>
+                <a class="gt-btn full" th:href="@{/challenges/{id}(id=${challenge.id})}">View Details</a>
             </article>
-
-            <article class="challenge">
-                <div class="c-head">
-                    <h3>Survivor Mode</h3>
-                    <span class="pill">+220 XP</span>
-                </div>
-                <p>Survive 10 minutes without dying. Prove your skill.</p>
-                <div class="c-meta">
-                    <span>Avg. Time: 10 min</span>
-                    <span>Completed: 4.6k</span>
-                </div>
-                <a class="gt-btn full" href="#">Join</a>
-            </article>
-
-            <article class="challenge">
-                <div class="c-head">
-                    <h3>Control Points</h3>
-                    <span class="pill">+150 XP</span>
-                </div>
-                <p>Capture 10 points in one session. Teamwork required.</p>
-                <div class="c-meta">
-                    <span>Avg. Time: 8 min</span>
-                    <span>Completed: 2.8k</span>
-                </div>
-                <a class="gt-btn full" href="#">Join</a>
-            </article>
-
-            <article class="challenge">
-                <div class="c-head">
-                    <h3>Speedrun Master</h3>
-                    <span class="pill">+250 XP</span>
-                </div>
-                <p>Finish the map in record time and dominate the board.</p>
-                <div class="c-meta">
-                    <span>Avg. Time: 6 min</span>
-                    <span>Completed: 5.2k</span>
-                </div>
-                <a class="gt-btn full" href="#">Join</a>
-            </article>
+        </div>
+        <div th:if="${challenges == null or challenges.isEmpty()}">
+            <p>No challenges available yet.</p>
         </div>
     </section>
 </main>

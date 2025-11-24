@@ -37,8 +37,6 @@ public class User {
     private Integer age;
 
 
-    // Getters
-
     public Long getId() { return id; }
 
     public String getUsername() { return username; }
@@ -65,7 +63,6 @@ public class User {
 
     public Boolean getProfilePrivate() { return profilePrivate; }
 
-    // Setters
 
     public void setId(Long id) { this.id = id; }
 

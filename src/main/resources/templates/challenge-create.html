@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create Challenge — GamerTrials</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/png" href="/img/logo-gt.png">
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #00ff88;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(0,255,136,0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+        }
+        .form-group select {
+            background-color: rgba(0,0,0,0.7) !important;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%2300ff88' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 0.75rem center !important;
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            padding-right: 2.5rem;
+        }
+        .form-group select::-ms-expand {
+            display: none;
+        }
+        .form-group select option {
+            background-color: #0a0a0f !important;
+            color: #fff !important;
+            padding: 0.75rem;
+        }
+        .form-group select option:hover {
+            background-color: rgba(0,255,136,0.2) !important;
+        }
+        .form-group select option:checked {
+            background: linear-gradient(0deg, rgba(0,255,136,0.3), rgba(0,255,136,0.3)) !important;
+            color: #00ff88 !important;
+        }
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 0 3px rgba(0,255,136,0.1);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 15, 0.98);
+            border: 1px solid rgba(0,255,136,0.3);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+        .autocomplete-item {
+            padding: 0.75rem;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .autocomplete-item:hover {
+            background: rgba(0,255,136,0.1);
+        }
+        .autocomplete-item img {
+            width: 40px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .autocomplete-item-info {
+            flex: 1;
+        }
+        .autocomplete-item-name {
+            font-weight: 600;
+            color: #fff;
+        }
+        .autocomplete-item-platforms {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 0.25rem;
+        }
+        .loading-spinner {
+            padding: 1rem;
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+<main class="gt-container">
+    <div class="form-container">
+        <h1>Create New Challenge</h1>
+        <p style="margin-bottom: 2rem; color: rgba(255,255,255,0.7);">Fill in the details to create a new challenge for the community.</p>
+
+        <form th:action="@{/challenges/new}" method="post" th:object="${challenge}">
+            <div class="form-group">
+                <label for="name">Challenge Name *</label>
+                <input type="text" id="name" name="name" th:field="*{name}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description *</label>
+                <textarea id="description" name="description" th:field="*{description}" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="game">Game *</label>
+                <input type="text"
+                       id="gameSearch"
+                       placeholder="Search for a game..."
+                       autocomplete="off">
+                <input type="hidden" id="game" name="game" th:field="*{game}" required>
+                <input type="hidden" id="platform" name="platform" th:field="*{platform}">
+                <input type="hidden" id="category" name="category" th:field="*{category}">
+                <div id="gameDropdown" class="autocomplete-dropdown"></div>
+                <small style="display: block; margin-top: 0.5rem; color: rgba(255,255,255,0.5);" id="platformDisplay"></small>
+                <small style="display: block; margin-top: 0.5rem; color: rgba(255,255,255,0.5);" id="categoryDisplay"></small>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="difficulty">Difficulty *</label>
+                    <select id="difficulty" name="difficulty" th:field="*{difficulty}" required>
+                        <option value="">Select Difficulty</option>
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                        <option value="Expert">Expert</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="type">Type *</label>
+                    <select id="type" name="type" th:field="*{type}" required>
+                        <option value="">Select Type</option>
+                        <option value="Daily">Daily</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="Seasonal">Seasonal</option>
+                        <option value="No Time Limit">No Time Limit</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="status">Status *</label>
+                    <select id="status" name="status" th:field="*{status}" required>
+                        <option value="ACTIVE">Active</option>
+                        <option value="UPCOMING">Upcoming</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dateOfClosing">Closing Date (Optional)</label>
+                    <input type="date" id="dateOfClosing" name="dateOfClosing" th:field="*{dateOfClosing}">
+                </div>
+                <div class="form-group">
+                    <label for="visibility">Visibility *</label>
+                    <select id="visibility" name="visibility" required>
+                        <option value="PUBLIC" selected>Public</option>
+                        <option value="FRIENDS_ONLY">Friends Only</option>
+                        <option value="INVITE_ONLY">Invite Only</option>
+                        <option value="PRIVATE">Private</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="gt-btn xl" style="flex: 1;">Create Challenge</button>
+                <a class="gt-btn ghost xl" href="/challenges" style="flex: 1; text-align: center; line-height: 3rem;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer class="gt-footer">
+    <div class="gt-container">
+        <div>© 2025 GamerTrials — All rights reserved</div>
+        <nav class="foot-nav">
+            <a href="#">Terms</a>
+            <a href="#">Privacy</a>
+            <a href="#">Contact</a>
+        </nav>
+    </div>
+</footer>
+
+<script>
+    let searchTimeout;
+    const gameSearchInput = document.getElementById('gameSearch');
+    const gameHiddenInput = document.getElementById('game');
+    const gameDropdown = document.getElementById('gameDropdown');
+
+    gameSearchInput.addEventListener('input', function(e) {
+        const query = e.target.value.trim();
+
+        clearTimeout(searchTimeout);
+
+        if (query.length < 3) {
+            gameDropdown.style.display = 'none';
+            return;
+        }
+
+        gameDropdown.innerHTML = '<div class="loading-spinner">Searching...</div>';
+        gameDropdown.style.display = 'block';
+
+        searchTimeout = setTimeout(() => {
+            fetch(`/api/games/search?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(games => {
+                    if (games.length === 0) {
+                        gameDropdown.innerHTML = '<div class="loading-spinner">No games found</div>';
+                        return;
+                    }
+
+                    gameDropdown.innerHTML = games.map(game => {
+                        const platforms = game.platforms ?
+                            game.platforms.map(p => p.name).join(', ') :
+                            'Unknown platforms';
+                        const genres = game.genres ?
+                            game.genres.map(g => g.name).join(', ') :
+                            'Other';
+                        const coverUrl = game.cover ?
+                            game.cover.fullImageUrl || '/img/placeholder-game.png' :
+                            '/img/placeholder-game.png';
+
+                        return `
+                            <div class="autocomplete-item" data-game-name="${game.name}" data-game-id="${game.id}" data-game-platforms="${platforms}" data-game-genres="${genres}">
+                                <img src="${coverUrl}" alt="${game.name}" onerror="this.src='/img/placeholder-game.png'">
+                                <div class="autocomplete-item-info">
+                                    <div class="autocomplete-item-name">${game.name}</div>
+                                    <div class="autocomplete-item-platforms">${platforms}</div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    document.querySelectorAll('.autocomplete-item').forEach(item => {
+                        item.addEventListener('click', function() {
+                            const gameName = this.getAttribute('data-game-name');
+                            const platforms = this.getAttribute('data-game-platforms');
+                            const genres = this.getAttribute('data-game-genres');
+
+                            gameSearchInput.value = gameName;
+                            gameHiddenInput.value = gameName;
+                            document.getElementById('platform').value = platforms;
+                            document.getElementById('category').value = genres;
+                            document.getElementById('platformDisplay').textContent = 'Platforms: ' + platforms;
+                            document.getElementById('categoryDisplay').textContent = 'Category: ' + genres;
+                            gameDropdown.style.display = 'none';
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error searching games:', error);
+                    gameDropdown.innerHTML = '<div class="loading-spinner">Error loading games</div>';
+                });
+        }, 300);
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!gameSearchInput.contains(e.target) && !gameDropdown.contains(e.target)) {
+            gameDropdown.style.display = 'none';
+        }
+    });
+
+    document.querySelector('form').addEventListener('submit', function(e) {
+        if (!gameHiddenInput.value) {
+            e.preventDefault();
+            alert('Please select a game from the dropdown');
+            gameSearchInput.focus();
+        }
+    });
+</script>
+
+</body>
+</html>
+

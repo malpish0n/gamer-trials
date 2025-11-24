@@ -1,123 +1,100 @@
-<!-- Reusable header fragment -->
-<div th:fragment="siteHeader">
-    <header class="gt-header">
-        <div class="gt-container">
-            <a class="gt-brand" href="/">
-                <img src="/img/logo-gt.png" alt="GamerTrials" class="gt-logo-img">
-                <span class="gt-name">GamerTrials</span>
-            </a>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
 
-            <nav class="gt-nav">
-                <a class="gt-link" href="/challenges">Challenges</a>
-                <a class="gt-link" href="#">Tournaments</a>
-                <a class="gt-link" href="#">Leaderboard</a>
-                <a class="gt-link" href="#">Community</a>
-            </nav>
+<header class="gt-header" th:fragment="siteHeader">
+    <div class="gt-container">
+        <a class="gt-brand" href="/">
+            <img src="/img/logo-gt.png" alt="GamerTrials" class="gt-logo-img">
+            <span class="gt-name">GamerTrials</span>
+        </a>
 
-            <div class="gt-actions">
-                <div th:if="${#authorization.expression('!isAuthenticated()')}">
-                    <a class="gt-btn ghost" href="/login">Log In</a>
-                    <a class="gt-btn" href="/register">Join</a>
+        <nav class="gt-nav">
+            <a class="gt-link" href="/challenges">Challenges</a>
+            <a class="gt-link" href="#">Tournaments</a>
+            <a class="gt-link" href="#">Leaderboard</a>
+            <a class="gt-link" href="#">Community</a>
+        </nav>
+
+        <div class="gt-actions">
+            <div th:if="${username == null}">
+                <a class="gt-btn ghost" href="/login">Log In</a>
+                <a class="gt-btn" href="/register">Join</a>
+            </div>
+
+            <div class="gt-user" th:if="${username != null}">
+                <div class="user-trigger" onclick="toggleUserMenu(event)">
+                    <span>Hi, <strong th:text="${username}">User</strong></span>
+                    <span class="arrow">▾</span>
                 </div>
-
-                <div class="gt-user" th:if="${#authorization.expression('isAuthenticated()')}">
-                    <div class="user-trigger">
-                        <span>Hi, <strong th:text="${#authentication.name}">User</strong></span>
-                        <span class="arrow">▾</span>
-                    </div>
-                    <div class="user-menu">
-                        <a th:href="@{/profile}">Profile</a>
-                        <a th:href="@{/dashboard}">Dashboard</a>
-                        <a th:href="@{/settings}">Settings</a>
-                        <a href="#">Activity</a>
-                        <hr>
-                        <a href="/logout">Logout</a>
-                    </div>
+                <div class="user-menu" id="userDropdown">
+                    <a th:href="@{/dashboard}">Dashboard</a>
+                    <a th:href="@{/profile}">Profile</a>
+                    <a href="#">Settings</a>
+                    <a href="#">Activity</a>
+                    <hr th:if="${userRole == 'ADMIN'}">
+                    <a th:href="@{/challenges/new}" th:if="${userRole == 'ADMIN'}" style="color: #00ff88;">Create Challenge</a>
+                    <hr>
+                    <a href="/logout">Logout</a>
                 </div>
             </div>
         </div>
-    </header>
+    </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const user = document.querySelector(".gt-user");
-            if (!user) return;
-            const menu = user.querySelector(".user-menu");
-            const trigger = user.querySelector(".user-trigger");
-
-            let hideTimer;
-
-            const show = () => {
-                clearTimeout(hideTimer);
-                menu.style.display = "block";
-            };
-            const hide = () => {
-                hideTimer = setTimeout(() => {
-                    menu.style.display = "none";
-                }, 150);
-            };
-
-            trigger.addEventListener("mouseenter", show);
-            trigger.addEventListener("mouseleave", hide);
-            menu.addEventListener("mouseenter", show);
-            menu.addEventListener("mouseleave", hide);
-        });
-    </script>
-
-    <script>
-        // Bio word-limit: insert a small counter next to any <textarea id="bio"> and enforce 250-word limit
-        document.addEventListener('DOMContentLoaded', () => {
-            const MAX_WORDS = 250;
-
-            function countWords(str){
-                if(!str) return 0;
-                const m = str.trim().match(/\S+/g);
-                return m ? m.length : 0;
+    <script th:inline="javascript">
+        function toggleUserMenu(e) {
+            e.stopPropagation();
+            const menu = document.getElementById('userDropdown');
+            if (menu) {
+                const isVisible = menu.style.display === 'block';
+                menu.style.display = isVisible ? 'none' : 'block';
             }
+        }
 
-            document.querySelectorAll('textarea#bio').forEach(textarea => {
-                // create counter element
-                const counter = document.createElement('div');
-                counter.className = 'bio-counter';
-                counter.setAttribute('aria-hidden','false');
-                counter.style.cssText = 'color:var(--muted);font-size:.85rem;margin-top:6px;text-align:right';
+        document.addEventListener('click', function(e) {
+            const menu = document.getElementById('userDropdown');
+            const userTrigger = document.querySelector('.user-trigger');
+            if (menu && userTrigger && !userTrigger.contains(e.target) && !menu.contains(e.target)) {
+                menu.style.display = 'none';
+            }
+        });
 
-                // insert after textarea
-                if(textarea.nextSibling){
-                    textarea.parentNode.insertBefore(counter, textarea.nextSibling);
-                } else {
-                    textarea.parentNode.appendChild(counter);
-                }
+        document.addEventListener('DOMContentLoaded', function() {
+            const userTrigger = document.querySelector('.user-trigger');
+            const menu = document.getElementById('userDropdown');
 
-                const update = () => {
-                    const words = countWords(textarea.value);
-                    if(words > MAX_WORDS){
-                        // trim to MAX_WORDS words
-                        const trimmed = textarea.value.trim().match(/\S+/g).slice(0, MAX_WORDS).join(' ');
-                        textarea.value = trimmed;
-                    }
-                    const current = countWords(textarea.value);
-                    counter.textContent = `${current}/${MAX_WORDS} words`;
-                };
+            if (userTrigger && menu) {
+                let hideTimer;
 
-                // initial update
-                update();
+                userTrigger.addEventListener('mouseenter', function() {
+                    clearTimeout(hideTimer);
+                    menu.style.display = 'block';
+                });
 
-                // on input or paste update the counter and enforce limit
-                textarea.addEventListener('input', update);
-                textarea.addEventListener('paste', () => setTimeout(update, 0));
+                userTrigger.addEventListener('mouseleave', function() {
+                    hideTimer = setTimeout(function() {
+                        menu.style.display = 'none';
+                    }, 200);
+                });
 
-                // ensure at submit the value is trimmed to MAX_WORDS
-                const form = textarea.closest('form');
-                if(form){
-                    form.addEventListener('submit', (e) => {
-                        const wordsArr = textarea.value.trim().match(/\S+/g) || [];
-                        if(wordsArr.length > MAX_WORDS){
-                            textarea.value = wordsArr.slice(0, MAX_WORDS).join(' ');
-                        }
-                    });
-                }
-            });
+                menu.addEventListener('mouseenter', function() {
+                    clearTimeout(hideTimer);
+                    menu.style.display = 'block';
+                });
+
+                menu.addEventListener('mouseleave', function() {
+                    hideTimer = setTimeout(function() {
+                        menu.style.display = 'none';
+                    }, 200);
+                });
+            }
         });
     </script>
-</div>
+</header>
+
+</body>
+</html>
+

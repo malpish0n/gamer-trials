@@ -27,9 +27,9 @@ public class Challenge {
     private String game;
     private String platform;
     private String difficulty;
-    private String category; // (moba, fps etc.)
+    private String category;
     private Integer rewardXp;
-    private String type; // monthly, yearly etc.
+    private String type;
 
     @ManyToMany
     @JoinTable(

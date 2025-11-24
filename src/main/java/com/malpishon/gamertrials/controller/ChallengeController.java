@@ -78,6 +78,9 @@ public class ChallengeController {
             challenge.setVisibility("PUBLIC");
         }
         challenge.setPublic("PUBLIC".equals(challenge.getVisibility()));
+        if (challenge.getRewardXp() == null) {
+            challenge.setRewardXp(0);
+        }
         challengeService.createChallenge(challenge);
         return "redirect:/challenges";
     }

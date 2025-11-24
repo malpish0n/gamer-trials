@@ -89,9 +89,8 @@ public class IGDBService {
             headers.set("Accept", "application/json");
 
             String body = String.format(
+                    "search \"%s\"; " +
                     "fields name, cover.url, cover.image_id, first_release_date, platforms.name, genres.name, rating_count, category; " +
-                    "where name ~ *\"%s\"* & rating_count >= 100; " +
-                    "sort rating_count desc; " +
                     "limit %d;",
                     query.replace("\"", "\\\""),
                     limit * 3
@@ -118,61 +117,24 @@ public class IGDBService {
 
             List<IGDBGame> filteredGames = Arrays.stream(games)
                     .filter(game -> {
-                        String nameLower = game.getName().toLowerCase();
-
-                        if (nameLower.matches(".*season \\d+.*") ||
-                            nameLower.matches(".*season\\d+.*") ||
-                            nameLower.contains("- season") ||
-                            nameLower.contains(": season")) {
-                            System.out.println("Excluding: " + game.getName() + " (season)");
+                        Integer ratingCount = game.getRatingCount();
+                        if (ratingCount != null && ratingCount < 10) {
+                            System.out.println("Excluding: " + game.getName() + " (rating_count too low: " + ratingCount + ")");
                             return false;
                         }
 
-                        if (nameLower.contains(" pack") || nameLower.endsWith(" pack")) {
-                            System.out.println("Excluding: " + game.getName() + " (pack)");
-                            return false;
-                        }
-
-                        if (nameLower.contains(" dlc") || nameLower.contains("dlc ")) {
-                            System.out.println("Excluding: " + game.getName() + " (dlc)");
-                            return false;
-                        }
-
-                        if (nameLower.contains("episode ")) {
-                            System.out.println("Excluding: " + game.getName() + " (episode)");
-                            return false;
-                        }
-
-                        if ((nameLower.contains(" mobile") || nameLower.contains(" lite")) &&
-                            !query.toLowerCase().contains("mobile") &&
-                            !query.toLowerCase().contains("lite")) {
-                            System.out.println("Excluding: " + game.getName() + " (mobile/lite)");
-                            return false;
-                        }
-
-                        if (nameLower.contains(" edition") ||
-                            nameLower.contains(" version") ||
-                            nameLower.contains(" bundle") ||
-                            nameLower.contains(": deluxe") ||
-                            nameLower.contains(" - deluxe") ||
-                            nameLower.contains(": ultimate") ||
-                            nameLower.contains(" - ultimate") ||
-                            nameLower.contains(": gold") ||
-                            nameLower.contains(" - gold") ||
-                            nameLower.contains(": platinum") ||
-                            nameLower.contains(": premium") ||
-                            nameLower.contains(": collectors") ||
-                            nameLower.contains(": collector's") ||
-                            nameLower.contains(": launch") ||
-                            nameLower.contains(" - launch") ||
-                            nameLower.contains(": special") ||
-                            nameLower.contains(": definitive") ||
-                            nameLower.contains(" - definitive")) {
-                            System.out.println("Excluding: " + game.getName() + " (special edition)");
+                        Integer category = game.getCategory();
+                        if (category != null && category != 0 && category != 2 && category != 4 && category != 8 && category != 9 && category != 10) {
+                            System.out.println("Excluding: " + game.getName() + " (category: " + category + ")");
                             return false;
                         }
 
                         return true;
+                    })
+                    .sorted((g1, g2) -> {
+                        Integer rc1 = g1.getRatingCount() != null ? g1.getRatingCount() : 0;
+                        Integer rc2 = g2.getRatingCount() != null ? g2.getRatingCount() : 0;
+                        return rc2.compareTo(rc1);
                     })
                     .limit(limit)
                     .collect(Collectors.toList());

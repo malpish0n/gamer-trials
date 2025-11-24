@@ -31,12 +31,38 @@
         .form-group textarea {
             width: 100%;
             padding: 0.75rem;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.5);
             border: 1px solid rgba(0,255,136,0.2);
             border-radius: 8px;
             color: #fff;
             font-family: 'Inter', sans-serif;
             font-size: 1rem;
+        }
+        .form-group select {
+            background-color: rgba(0,0,0,0.7) !important;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%2300ff88' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 0.75rem center !important;
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            padding-right: 2.5rem;
+        }
+        .form-group select::-ms-expand {
+            display: none;
+        }
+        .form-group select option {
+            background-color: #0a0a0f !important;
+            color: #fff !important;
+            padding: 0.75rem;
+        }
+        .form-group select option:hover {
+            background-color: rgba(0,255,136,0.2) !important;
+        }
+        .form-group select option:checked {
+            background: linear-gradient(0deg, rgba(0,255,136,0.3), rgba(0,255,136,0.3)) !important;
+            color: #00ff88 !important;
         }
         .form-group textarea {
             min-height: 120px;
@@ -47,19 +73,12 @@
         .form-group textarea:focus {
             outline: none;
             border-color: #00ff88;
+            box-shadow: 0 0 0 3px rgba(0,255,136,0.1);
         }
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
-        }
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .checkbox-group input[type="checkbox"] {
-            width: auto;
         }
         .autocomplete-dropdown {
             position: absolute;
@@ -138,26 +157,13 @@
                        autocomplete="off">
                 <input type="hidden" id="game" name="game" th:field="*{game}" required>
                 <input type="hidden" id="platform" name="platform" th:field="*{platform}">
+                <input type="hidden" id="category" name="category" th:field="*{category}">
                 <div id="gameDropdown" class="autocomplete-dropdown"></div>
                 <small style="display: block; margin-top: 0.5rem; color: rgba(255,255,255,0.5);" id="platformDisplay"></small>
+                <small style="display: block; margin-top: 0.5rem; color: rgba(255,255,255,0.5);" id="categoryDisplay"></small>
             </div>
 
             <div class="form-row">
-                <div class="form-group">
-                    <label for="category">Category *</label>
-                    <select id="category" name="category" th:field="*{category}" required>
-                        <option value="">Select Category</option>
-                        <option value="FPS">FPS</option>
-                        <option value="MOBA">MOBA</option>
-                        <option value="RPG">RPG</option>
-                        <option value="Strategy">Strategy</option>
-                        <option value="Battle Royale">Battle Royale</option>
-                        <option value="Racing">Racing</option>
-                        <option value="Sports">Sports</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-
                 <div class="form-group">
                     <label for="difficulty">Difficulty *</label>
                     <select id="difficulty" name="difficulty" th:field="*{difficulty}" required>
@@ -168,9 +174,7 @@
                         <option value="Expert">Expert</option>
                     </select>
                 </div>
-            </div>
 
-            <div class="form-row">
                 <div class="form-group">
                     <label for="type">Type *</label>
                     <select id="type" name="type" th:field="*{type}" required>
@@ -182,14 +186,9 @@
                         <option value="No Time Limit">No Time Limit</option>
                     </select>
                 </div>
-
-                <div class="form-group">
-                    <label for="rewardXp">Reward XP *</label>
-                    <input type="number" id="rewardXp" name="rewardXp" th:field="*{rewardXp}" min="0" required>
-                </div>
             </div>
 
-            <div class="form-row">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
                 <div class="form-group">
                     <label for="status">Status *</label>
                     <select id="status" name="status" th:field="*{status}" required>
@@ -201,7 +200,6 @@
                     <label for="dateOfClosing">Closing Date (Optional)</label>
                     <input type="date" id="dateOfClosing" name="dateOfClosing" th:field="*{dateOfClosing}">
                 </div>
-
                 <div class="form-group">
                     <label for="visibility">Visibility *</label>
                     <select id="visibility" name="visibility" required>
@@ -243,7 +241,7 @@
 
         clearTimeout(searchTimeout);
 
-        if (query.length < 2) {
+        if (query.length < 3) {
             gameDropdown.style.display = 'none';
             return;
         }
@@ -264,12 +262,15 @@
                         const platforms = game.platforms ?
                             game.platforms.map(p => p.name).join(', ') :
                             'Unknown platforms';
+                        const genres = game.genres ?
+                            game.genres.map(g => g.name).join(', ') :
+                            'Other';
                         const coverUrl = game.cover ?
                             game.cover.fullImageUrl || '/img/placeholder-game.png' :
                             '/img/placeholder-game.png';
 
                         return `
-                            <div class="autocomplete-item" data-game-name="${game.name}" data-game-id="${game.id}" data-game-platforms="${platforms}">
+                            <div class="autocomplete-item" data-game-name="${game.name}" data-game-id="${game.id}" data-game-platforms="${platforms}" data-game-genres="${genres}">
                                 <img src="${coverUrl}" alt="${game.name}" onerror="this.src='/img/placeholder-game.png'">
                                 <div class="autocomplete-item-info">
                                     <div class="autocomplete-item-name">${game.name}</div>
@@ -283,10 +284,14 @@
                         item.addEventListener('click', function() {
                             const gameName = this.getAttribute('data-game-name');
                             const platforms = this.getAttribute('data-game-platforms');
+                            const genres = this.getAttribute('data-game-genres');
+
                             gameSearchInput.value = gameName;
                             gameHiddenInput.value = gameName;
                             document.getElementById('platform').value = platforms;
+                            document.getElementById('category').value = genres;
                             document.getElementById('platformDisplay').textContent = 'Platforms: ' + platforms;
+                            document.getElementById('categoryDisplay').textContent = 'Category: ' + genres;
                             gameDropdown.style.display = 'none';
                         });
                     });

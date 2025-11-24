@@ -1,7 +1,6 @@
 package com.malpishon.gamertrials.controller;
 
 import com.malpishon.gamertrials.model.Challenge;
-import com.malpishon.gamertrials.model.GameList;
 import com.malpishon.gamertrials.model.User;
 import com.malpishon.gamertrials.repository.UserRepository;
 import com.malpishon.gamertrials.service.ChallengeService;
@@ -58,7 +57,6 @@ public class ChallengeController {
     @GetMapping("/new")
     public String newChallengeForm(Model model) {
         model.addAttribute("challenge", new Challenge());
-        model.addAttribute("games", GameList.getAllGameNames());
         return "challenge-create";
     }
 

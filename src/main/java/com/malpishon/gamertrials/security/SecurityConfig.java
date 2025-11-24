@@ -39,10 +39,10 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider())
 
                 .authorizeHttpRequests(auth -> auth
-                        // ADMIN ONLY (ROLE_ADMIN w bazie)
+                        .requestMatchers("/api/games/**").permitAll()
                         .requestMatchers("/challenges/new").hasRole("ADMIN")
-                        .requestMatchers("/challenges").permitAll()    // GET /challenges public
-                        .requestMatchers("/challenges/**").permitAll() // GET /challenges/{id} public
+                        .requestMatchers("/challenges").permitAll()
+                        .requestMatchers("/challenges/**").permitAll()
 
                         .anyRequest().permitAll()
                 )

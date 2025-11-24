@@ -18,6 +18,7 @@
         }
         .form-group {
             margin-bottom: 1.5rem;
+            position: relative;
         }
         .form-group label {
             display: block;
@@ -60,6 +61,54 @@
         .checkbox-group input[type="checkbox"] {
             width: auto;
         }
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 15, 0.98);
+            border: 1px solid rgba(0,255,136,0.3);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+        .autocomplete-item {
+            padding: 0.75rem;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .autocomplete-item:hover {
+            background: rgba(0,255,136,0.1);
+        }
+        .autocomplete-item img {
+            width: 40px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .autocomplete-item-info {
+            flex: 1;
+        }
+        .autocomplete-item-name {
+            font-weight: 600;
+            color: #fff;
+        }
+        .autocomplete-item-platforms {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 0.25rem;
+        }
+        .loading-spinner {
+            padding: 1rem;
+            text-align: center;
+            color: rgba(255,255,255,0.6);
+        }
     </style>
 </head>
 <body>
@@ -81,19 +130,16 @@
                 <textarea id="description" name="description" th:field="*{description}" required></textarea>
             </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="game">Game *</label>
-                    <select id="game" name="game" th:field="*{game}" required onchange="toggleCustomGame()">
-                        <option value="">Select Game</option>
-                        <option th:each="gameOption : ${games}" th:value="${gameOption}" th:text="${gameOption}"></option>
-                    </select>
-                </div>
-
-                <div class="form-group" id="customGameGroup" style="display: none;">
-                    <label for="customGame">Custom Game Name</label>
-                    <input type="text" id="customGame" name="customGame" placeholder="Enter game name">
-                </div>
+            <div class="form-group">
+                <label for="game">Game *</label>
+                <input type="text"
+                       id="gameSearch"
+                       placeholder="Search for a game..."
+                       autocomplete="off">
+                <input type="hidden" id="game" name="game" th:field="*{game}" required>
+                <input type="hidden" id="platform" name="platform" th:field="*{platform}">
+                <div id="gameDropdown" class="autocomplete-dropdown"></div>
+                <small style="display: block; margin-top: 0.5rem; color: rgba(255,255,255,0.5);" id="platformDisplay"></small>
             </div>
 
             <div class="form-row">
@@ -113,22 +159,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="platform">Platform *</label>
-                    <select id="platform" name="platform" th:field="*{platform}" required>
-                        <option value="">Select Platform</option>
-                        <option value="PC">PC</option>
-                        <option value="PlayStation 4">PlayStation 4</option>
-                        <option value="PlayStation 5">PlayStation 5</option>
-                        <option value="Xbox One">Xbox One</option>
-                        <option value="Xbox Series X|S">Xbox Series X|S</option>
-                        <option value="Nintendo Switch">Nintendo Switch</option>
-                        <option value="Cross-Platform">Cross-Platform</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
                     <label for="difficulty">Difficulty *</label>
                     <select id="difficulty" name="difficulty" th:field="*{difficulty}" required>
                         <option value="">Select Difficulty</option>
@@ -138,7 +168,9 @@
                         <option value="Expert">Expert</option>
                     </select>
                 </div>
+            </div>
 
+            <div class="form-row">
                 <div class="form-group">
                     <label for="type">Type *</label>
                     <select id="type" name="type" th:field="*{type}" required>
@@ -150,14 +182,14 @@
                         <option value="No Time Limit">No Time Limit</option>
                     </select>
                 </div>
-            </div>
 
-            <div class="form-row">
                 <div class="form-group">
                     <label for="rewardXp">Reward XP *</label>
                     <input type="number" id="rewardXp" name="rewardXp" th:field="*{rewardXp}" min="0" required>
                 </div>
+            </div>
 
+            <div class="form-row">
                 <div class="form-group">
                     <label for="status">Status *</label>
                     <select id="status" name="status" th:field="*{status}" required>
@@ -165,9 +197,6 @@
                         <option value="UPCOMING">Upcoming</option>
                     </select>
                 </div>
-            </div>
-
-            <div class="form-row">
                 <div class="form-group">
                     <label for="dateOfClosing">Closing Date (Optional)</label>
                     <input type="date" id="dateOfClosing" name="dateOfClosing" th:field="*{dateOfClosing}">
@@ -204,27 +233,82 @@
 </footer>
 
 <script>
-    function toggleCustomGame() {
-        const gameSelect = document.getElementById('game');
-        const customGameGroup = document.getElementById('customGameGroup');
-        const customGameInput = document.getElementById('customGame');
+    let searchTimeout;
+    const gameSearchInput = document.getElementById('gameSearch');
+    const gameHiddenInput = document.getElementById('game');
+    const gameDropdown = document.getElementById('gameDropdown');
 
-        if (gameSelect.value === 'Other') {
-            customGameGroup.style.display = 'block';
-            customGameInput.required = true;
-        } else {
-            customGameGroup.style.display = 'none';
-            customGameInput.required = false;
-            customGameInput.value = '';
+    gameSearchInput.addEventListener('input', function(e) {
+        const query = e.target.value.trim();
+
+        clearTimeout(searchTimeout);
+
+        if (query.length < 2) {
+            gameDropdown.style.display = 'none';
+            return;
         }
-    }
+
+        gameDropdown.innerHTML = '<div class="loading-spinner">Searching...</div>';
+        gameDropdown.style.display = 'block';
+
+        searchTimeout = setTimeout(() => {
+            fetch(`/api/games/search?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(games => {
+                    if (games.length === 0) {
+                        gameDropdown.innerHTML = '<div class="loading-spinner">No games found</div>';
+                        return;
+                    }
+
+                    gameDropdown.innerHTML = games.map(game => {
+                        const platforms = game.platforms ?
+                            game.platforms.map(p => p.name).join(', ') :
+                            'Unknown platforms';
+                        const coverUrl = game.cover ?
+                            game.cover.fullImageUrl || '/img/placeholder-game.png' :
+                            '/img/placeholder-game.png';
+
+                        return `
+                            <div class="autocomplete-item" data-game-name="${game.name}" data-game-id="${game.id}" data-game-platforms="${platforms}">
+                                <img src="${coverUrl}" alt="${game.name}" onerror="this.src='/img/placeholder-game.png'">
+                                <div class="autocomplete-item-info">
+                                    <div class="autocomplete-item-name">${game.name}</div>
+                                    <div class="autocomplete-item-platforms">${platforms}</div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    document.querySelectorAll('.autocomplete-item').forEach(item => {
+                        item.addEventListener('click', function() {
+                            const gameName = this.getAttribute('data-game-name');
+                            const platforms = this.getAttribute('data-game-platforms');
+                            gameSearchInput.value = gameName;
+                            gameHiddenInput.value = gameName;
+                            document.getElementById('platform').value = platforms;
+                            document.getElementById('platformDisplay').textContent = 'Platforms: ' + platforms;
+                            gameDropdown.style.display = 'none';
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error searching games:', error);
+                    gameDropdown.innerHTML = '<div class="loading-spinner">Error loading games</div>';
+                });
+        }, 300);
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!gameSearchInput.contains(e.target) && !gameDropdown.contains(e.target)) {
+            gameDropdown.style.display = 'none';
+        }
+    });
 
     document.querySelector('form').addEventListener('submit', function(e) {
-        const gameSelect = document.getElementById('game');
-        const customGameInput = document.getElementById('customGame');
-
-        if (gameSelect.value === 'Other' && customGameInput.value.trim()) {
-            gameSelect.value = customGameInput.value.trim();
+        if (!gameHiddenInput.value) {
+            e.preventDefault();
+            alert('Please select a game from the dropdown');
+            gameSearchInput.focus();
         }
     });
 </script>

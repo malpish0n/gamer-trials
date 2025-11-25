@@ -138,6 +138,11 @@ public class IGDBService {
 
                         return score2.compareTo(score1);
                     })
+                    .sorted((g1, g2) -> {
+                        Integer rc1 = g1.getRatingCount() != null ? g1.getRatingCount() : 0;
+                        Integer rc2 = g2.getRatingCount() != null ? g2.getRatingCount() : 0;
+                        return rc2.compareTo(rc1);
+                    })
                     .limit(limit)
                     .collect(Collectors.toList());
 

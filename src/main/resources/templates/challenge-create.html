@@ -31,12 +31,38 @@
         .form-group textarea {
             width: 100%;
             padding: 0.75rem;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.5);
             border: 1px solid rgba(0,255,136,0.2);
             border-radius: 8px;
             color: #fff;
             font-family: 'Inter', sans-serif;
             font-size: 1rem;
+        }
+        .form-group select {
+            background-color: rgba(0,0,0,0.7) !important;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%2300ff88' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 0.75rem center !important;
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            padding-right: 2.5rem;
+        }
+        .form-group select::-ms-expand {
+            display: none;
+        }
+        .form-group select option {
+            background-color: #0a0a0f !important;
+            color: #fff !important;
+            padding: 0.75rem;
+        }
+        .form-group select option:hover {
+            background-color: rgba(0,255,136,0.2) !important;
+        }
+        .form-group select option:checked {
+            background: linear-gradient(0deg, rgba(0,255,136,0.3), rgba(0,255,136,0.3)) !important;
+            color: #00ff88 !important;
         }
         .form-group textarea {
             min-height: 120px;
@@ -47,19 +73,12 @@
         .form-group textarea:focus {
             outline: none;
             border-color: #00ff88;
+            box-shadow: 0 0 0 3px rgba(0,255,136,0.1);
         }
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
-        }
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .checkbox-group input[type="checkbox"] {
-            width: auto;
         }
         .autocomplete-dropdown {
             position: absolute;
@@ -138,8 +157,10 @@
                        autocomplete="off">
                 <input type="hidden" id="game" name="game" th:field="*{game}" required>
                 <input type="hidden" id="platform" name="platform" th:field="*{platform}">
+                <input type="hidden" id="category" name="category" th:field="*{category}">
                 <div id="gameDropdown" class="autocomplete-dropdown"></div>
                 <small style="display: block; margin-top: 0.5rem; color: rgba(255,255,255,0.5);" id="platformDisplay"></small>
+                <small style="display: block; margin-top: 0.5rem; color: rgba(255,255,255,0.5);" id="categoryDisplay"></small>
             </div>
 
             <div class="form-row">
@@ -217,7 +238,7 @@
 
         clearTimeout(searchTimeout);
 
-        if (query.length < 2) {
+        if (query.length < 3) {
             gameDropdown.style.display = 'none';
             return;
         }

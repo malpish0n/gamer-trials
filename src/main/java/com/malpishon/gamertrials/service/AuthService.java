@@ -19,7 +19,6 @@ public class AuthService {
     }
 
     public void registerUser(User user) {
-        // Normalize input
         if (user.getEmail() != null) {
             user.setEmail(user.getEmail().trim().toLowerCase());
         }
@@ -27,7 +26,6 @@ public class AuthService {
             user.setUsername(user.getUsername().trim());
         }
 
-        // Basic defaults
         if (user.getXp() == null) user.setXp(0);
         if (user.getLevel() == null) user.setLevel(1);
 

@@ -144,34 +144,6 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="category">Category *</label>
-                    <select id="category" name="category" th:field="*{category}" required>
-                        <option value="">Select Category</option>
-                        <option value="FPS">FPS</option>
-                        <option value="MOBA">MOBA</option>
-                        <option value="RPG">RPG</option>
-                        <option value="Strategy">Strategy</option>
-                        <option value="Battle Royale">Battle Royale</option>
-                        <option value="Racing">Racing</option>
-                        <option value="Sports">Sports</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="difficulty">Difficulty *</label>
-                    <select id="difficulty" name="difficulty" th:field="*{difficulty}" required>
-                        <option value="">Select Difficulty</option>
-                        <option value="Easy">Easy</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Hard">Hard</option>
-                        <option value="Expert">Expert</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
                     <label for="type">Type *</label>
                     <select id="type" name="type" th:field="*{type}" required>
                         <option value="">Select Type</option>
@@ -184,24 +156,19 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="rewardXp">Reward XP *</label>
-                    <input type="number" id="rewardXp" name="rewardXp" th:field="*{rewardXp}" min="0" required>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
                     <label for="status">Status *</label>
                     <select id="status" name="status" th:field="*{status}" required>
                         <option value="ACTIVE">Active</option>
                         <option value="UPCOMING">Upcoming</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="dateOfClosing">Closing Date (Optional)</label>
-                    <input type="date" id="dateOfClosing" name="dateOfClosing" th:field="*{dateOfClosing}">
-                </div>
+            </div>
 
+            <input type="hidden" id="category" name="category" th:field="*{category}">
+            <input type="hidden" id="difficulty" name="difficulty" th:field="*{difficulty}">
+            <input type="hidden" id="rewardXp" name="rewardXp" th:field="*{rewardXp}" value="0">
+
+            <div class="form-row">
                 <div class="form-group">
                     <label for="visibility">Visibility *</label>
                     <select id="visibility" name="visibility" required>
@@ -211,7 +178,14 @@
                         <option value="PRIVATE">Private</option>
                     </select>
                 </div>
+
+                <div class="form-group" id="startDateGroup" style="display: none;">
+                    <label for="startDate">Start Date *</label>
+                    <input type="date" id="startDate" name="startDate">
+                </div>
             </div>
+
+            <input type="hidden" id="dateOfClosing" name="dateOfClosing" th:field="*{dateOfClosing}">
 
             <div style="display: flex; gap: 1rem; margin-top: 2rem;">
                 <button type="submit" class="gt-btn xl" style="flex: 1;">Create Challenge</button>
@@ -264,12 +238,19 @@
                         const platforms = game.platforms ?
                             game.platforms.map(p => p.name).join(', ') :
                             'Unknown platforms';
+                        const genres = game.genres ?
+                            game.genres.map(g => g.name).join(', ') :
+                            'Other';
                         const coverUrl = game.cover ?
                             game.cover.fullImageUrl || '/img/placeholder-game.png' :
                             '/img/placeholder-game.png';
 
                         return `
-                            <div class="autocomplete-item" data-game-name="${game.name}" data-game-id="${game.id}" data-game-platforms="${platforms}">
+                            <div class="autocomplete-item"
+                                 data-game-name="${game.name}"
+                                 data-game-id="${game.id}"
+                                 data-game-platforms="${platforms}"
+                                 data-game-genres="${genres}">
                                 <img src="${coverUrl}" alt="${game.name}" onerror="this.src='/img/placeholder-game.png'">
                                 <div class="autocomplete-item-info">
                                     <div class="autocomplete-item-name">${game.name}</div>
@@ -283,10 +264,12 @@
                         item.addEventListener('click', function() {
                             const gameName = this.getAttribute('data-game-name');
                             const platforms = this.getAttribute('data-game-platforms');
+                            const genres = this.getAttribute('data-game-genres');
                             gameSearchInput.value = gameName;
                             gameHiddenInput.value = gameName;
                             document.getElementById('platform').value = platforms;
-                            document.getElementById('platformDisplay').textContent = 'Platforms: ' + platforms;
+                            document.getElementById('category').value = genres;
+                            document.getElementById('platformDisplay').textContent = 'Platforms: ' + platforms + ' | Genres: ' + genres;
                             gameDropdown.style.display = 'none';
                         });
                     });
@@ -304,11 +287,33 @@
         }
     });
 
+    const statusSelect = document.getElementById('status');
+    const startDateGroup = document.getElementById('startDateGroup');
+    const startDateInput = document.getElementById('startDate');
+
+    statusSelect.addEventListener('change', function() {
+        if (this.value === 'UPCOMING') {
+            startDateGroup.style.display = 'block';
+            startDateInput.setAttribute('required', 'required');
+        } else {
+            startDateGroup.style.display = 'none';
+            startDateInput.removeAttribute('required');
+            startDateInput.value = '';
+        }
+    });
+
     document.querySelector('form').addEventListener('submit', function(e) {
         if (!gameHiddenInput.value) {
             e.preventDefault();
             alert('Please select a game from the dropdown');
             gameSearchInput.focus();
+            return;
+        }
+
+        if (statusSelect.value === 'UPCOMING' && !startDateInput.value) {
+            e.preventDefault();
+            alert('Please select a start date for upcoming challenge');
+            startDateInput.focus();
         }
     });
 </script>

@@ -19,6 +19,7 @@ public class Challenge {
     private String name;
     private String description;
     private LocalDate dateOfCreation;
+    private LocalDate startDate;
     private LocalDate dateOfClosing;
     private String status;
     private String winner;
@@ -80,6 +81,13 @@ public class Challenge {
         }
         public void setDateOfCreation (LocalDate dateOfCreation){
             this.dateOfCreation = dateOfCreation;
+        }
+
+        public LocalDate getStartDate () {
+            return startDate;
+        }
+        public void setStartDate (LocalDate startDate){
+            this.startDate = startDate;
         }
 
         public LocalDate getDateOfClosing () {

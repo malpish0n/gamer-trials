@@ -89,12 +89,10 @@ public class IGDBService {
             headers.set("Accept", "application/json");
 
             String body = String.format(
-                    "fields name, cover.url, cover.image_id, first_release_date, platforms.name, genres.name, rating_count, category; " +
-                    "where name ~ *\"%s\"* & rating_count >= 100; " +
-                    "sort rating_count desc; " +
-                    "limit %d;",
-                    query.replace("\"", "\\\""),
-                    limit * 3
+                    "search \"%s\"; " +
+                    "fields name, cover.url, cover.image_id, first_release_date, platforms.name, genres.name, rating, rating_count, category; " +
+                    "limit 100;",
+                    query.replace("\"", "\\\"")
             );
 
             System.out.println("IGDB Query: " + body);
@@ -116,69 +114,35 @@ public class IGDBService {
             IGDBGame[] games = objectMapper.readValue(response.getBody(), IGDBGame[].class);
             System.out.println("Found " + games.length + " games before filtering");
 
-            List<IGDBGame> filteredGames = Arrays.stream(games)
+            List<IGDBGame> filtered = Arrays.stream(games)
                     .filter(game -> {
-                        String nameLower = game.getName().toLowerCase();
+                        Double rating = game.getRating();
+                        Integer ratingCount = game.getRatingCount();
 
-                        if (nameLower.matches(".*season \\d+.*") ||
-                            nameLower.matches(".*season\\d+.*") ||
-                            nameLower.contains("- season") ||
-                            nameLower.contains(": season")) {
-                            System.out.println("Excluding: " + game.getName() + " (season)");
+                        if (rating == null || rating < 5.0) {
                             return false;
                         }
-
-                        if (nameLower.contains(" pack") || nameLower.endsWith(" pack")) {
-                            System.out.println("Excluding: " + game.getName() + " (pack)");
+                        if (ratingCount == null || ratingCount < 20) {
                             return false;
                         }
-
-                        if (nameLower.contains(" dlc") || nameLower.contains("dlc ")) {
-                            System.out.println("Excluding: " + game.getName() + " (dlc)");
-                            return false;
-                        }
-
-                        if (nameLower.contains("episode ")) {
-                            System.out.println("Excluding: " + game.getName() + " (episode)");
-                            return false;
-                        }
-
-                        if ((nameLower.contains(" mobile") || nameLower.contains(" lite")) &&
-                            !query.toLowerCase().contains("mobile") &&
-                            !query.toLowerCase().contains("lite")) {
-                            System.out.println("Excluding: " + game.getName() + " (mobile/lite)");
-                            return false;
-                        }
-
-                        if (nameLower.contains(" edition") ||
-                            nameLower.contains(" version") ||
-                            nameLower.contains(" bundle") ||
-                            nameLower.contains(": deluxe") ||
-                            nameLower.contains(" - deluxe") ||
-                            nameLower.contains(": ultimate") ||
-                            nameLower.contains(" - ultimate") ||
-                            nameLower.contains(": gold") ||
-                            nameLower.contains(" - gold") ||
-                            nameLower.contains(": platinum") ||
-                            nameLower.contains(": premium") ||
-                            nameLower.contains(": collectors") ||
-                            nameLower.contains(": collector's") ||
-                            nameLower.contains(": launch") ||
-                            nameLower.contains(" - launch") ||
-                            nameLower.contains(": special") ||
-                            nameLower.contains(": definitive") ||
-                            nameLower.contains(" - definitive")) {
-                            System.out.println("Excluding: " + game.getName() + " (special edition)");
-                            return false;
-                        }
-
                         return true;
+                    })
+                    .sorted((g1, g2) -> {
+                        Double r1 = g1.getRating() != null ? g1.getRating() : 0.0;
+                        Double r2 = g2.getRating() != null ? g2.getRating() : 0.0;
+                        Integer rc1 = g1.getRatingCount() != null ? g1.getRatingCount() : 0;
+                        Integer rc2 = g2.getRatingCount() != null ? g2.getRatingCount() : 0;
+
+                        Double score1 = r1 * Math.log(rc1 + 1);
+                        Double score2 = r2 * Math.log(rc2 + 1);
+
+                        return score2.compareTo(score1);
                     })
                     .limit(limit)
                     .collect(Collectors.toList());
 
-            System.out.println("Returning " + filteredGames.size() + " filtered games");
-            return filteredGames;
+            System.out.println("Returning " + filtered.size() + " games sorted by popularity");
+            return filtered;
 
         } catch (Exception e) {
             System.err.println("Error searching games: " + e.getMessage());
@@ -235,9 +199,9 @@ public class IGDBService {
             headers.setContentType(MediaType.TEXT_PLAIN);
 
             String body = String.format(
-                    "fields name,cover.url,cover.image_id,first_release_date,platforms.name,genres.name; " +
-                    "where rating_count > 10 & (category = 0 | category = 8 | category = 9); " +
-                    "sort rating_count desc; " +
+                    "fields name,cover.url,cover.image_id,first_release_date,platforms.name,genres.name,rating; " +
+                    "where (category = 0 | category = 8 | category = 9) & rating >= 5; " +
+                    "sort rating desc; " +
                     "limit %d;",
                     limit
             );

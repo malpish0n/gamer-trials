@@ -15,6 +15,8 @@ public class IGDBGame {
 
     private Integer follows;
 
+    private Double rating;
+
     @JsonProperty("rating_count")
     private Integer ratingCount;
 
@@ -92,6 +94,14 @@ public class IGDBGame {
 
     public void setFollows(Integer follows) {
         this.follows = follows;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
     }
 
     public Integer getRatingCount() {

@@ -8,88 +8,147 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="icon" type="image/png" href="/img/logo-gt.png">
+    <style>
+        .creator-link { color: #fff; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; padding: 6px; border-radius: 8px; }
+        .creator-link:hover { background: rgba(255,255,255,0.02); cursor: pointer; }
+        .creator-avatar { width:64px; height:64px; border-radius:50%; overflow:hidden; flex-shrink:0; }
+        .creator-avatar img { width:100%; height:100%; object-fit:cover; display:block; }
+        .creator-initial { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#0b0c0d,#00ff88); color:#0b0c0d; font-weight:800; font-size:24px; }
+        /* page-specific: remove dark footer band on this page */
+        .gt-footer { background: transparent !important; border-top: 0 !important; }
+    </style>
 </head>
 <body>
 <div th:replace="~{fragments/header :: siteHeader}"></div>
 
 <main class="gt-container">
-    <section class="gt-section">
+    <section class="gt-section" style="padding-bottom:0;border-bottom:0;">
         <div style="max-width: 800px; margin: 0 auto;">
             <a class="gt-link" href="/challenges" style="display: inline-block; margin-bottom: 1rem;">← Back to Challenges</a>
 
-            <div class="hero-card" style="margin-bottom: 2rem;">
-                <div class="hc-top">
-                    <span class="badge" th:text="${challenge.status}">ACTIVE</span>
-                    <h1 th:text="${challenge.name}">Challenge Name</h1>
-                    <p th:text="${challenge.description}">Challenge description</p>
-                </div>
-                <div class="hc-bottom">
-                    <div class="pill" th:text="${challenge.type}">Solo</div>
-                    <div class="pill" th:text="${challenge.difficulty}">Hard</div>
-                    <div class="pill" th:text="'+' + ${challenge.rewardXp} + ' XP'">+250 XP</div>
-                </div>
-            </div>
+            <!-- hero-card removed here — kept inside left column so sidebar aligns with the title -->
 
-            <div style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 2rem; margin-bottom: 2rem;">
-                <h2 style="margin-bottom: 1rem;">Challenge Details</h2>
-                <div style="display: grid; gap: 1rem;">
-                    <div>
-                        <strong>Game:</strong> <span th:text="${challenge.game}">CS:GO</span>
+            <!-- details card moved inside the left column grid to keep layout consistent -->
+            <div class="page-grid" style="display:block;">
+                <style>
+                    .page-grid { }
+                    .page-grid .grid { display:grid; grid-template-columns: 1fr 320px; gap:24px; align-items:start; }
+                    .left-column { display:flex; flex-direction:column; align-items:center; }
+                    .content-wrapper { width:100%; max-width:820px; }
+                    .details-card { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; font-size: 1rem; }
+                    .details-card h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+                    .details-card strong { display:inline-block; width:140px; font-weight:700; }
+                    .creator-sidebar { width:280px; align-self:start; position:relative; }
+                    @media(max-width:1099px) {
+                        .page-grid .grid { grid-template-columns: 1fr; }
+                        .creator-sidebar { width:100%; position:relative; }
+                    }
+                </style>
+
+                <div class="grid">
+                    <!-- left column: centered content -->
+                    <div class="left-column">
+                        <div class="content-wrapper">
+
+                            <!-- hero-card (kept as-is) -->
+                            <div class="hero-card" style="margin-bottom: 2rem;">
+                                <div class="hc-top">
+                                    <span class="badge" th:text="${challenge.status}">ACTIVE</span>
+                                    <h1 th:text="${challenge.name}">Challenge Name</h1>
+                                    <p th:text="${challenge.description}">Challenge description</p>
+                                </div>
+                                <div class="hc-bottom">
+                                    <div class="pill" th:text="${challenge.type}">Solo</div>
+                                    <div class="pill" th:text="${challenge.difficulty}">Hard</div>
+                                    <div class="pill" th:text="'+' + ${challenge.rewardXp} + ' XP'">+250 XP</div>
+                                </div>
+                            </div>
+
+                            <!-- details card moved inside the left column grid to keep layout consistent -->
+                            <div class="details-card">
+                                <h2 style="margin-bottom: 1rem;">Challenge Details</h2>
+
+                                <div style="display: grid; gap: 1rem;">
+                                    <div>
+                                        <strong>Game:</strong> <span th:text="${challenge.game}">CS:GO</span>
+                                    </div>
+                                    <div th:if="${challenge.platform != null}">
+                                        <strong>Platform:</strong> <span th:text="${challenge.platform}">PC</span>
+                                    </div>
+                                    <div>
+                                        <strong>Category:</strong> <span th:text="${challenge.category}">FPS</span>
+                                    </div>
+                                    <div>
+                                        <strong>Difficulty:</strong> <span th:text="${challenge.difficulty}">Hard</span>
+                                    </div>
+                                    <div>
+                                        <strong>Type:</strong> <span th:text="${challenge.type}">Monthly</span>
+                                    </div>
+                                    <div>
+                                        <strong>Reward XP:</strong> <span th:text="${challenge.rewardXp}">250</span>
+                                    </div>
+                                    <div>
+                                        <strong>Status:</strong> <span th:text="${challenge.status}">ACTIVE</span>
+                                    </div>
+                                    <div>
+                                        <strong>Created:</strong> <span th:text="${challenge.dateOfCreation}">2025-01-01</span>
+                                    </div>
+                                    <div th:if="${challenge.dateOfClosing != null}">
+                                        <strong>Closing Date:</strong> <span th:text="${challenge.dateOfClosing}">2025-12-31</span>
+                                    </div>
+                                    <div th:if="${challenge.winner != null}">
+                                        <strong>Winner:</strong> <span th:text="${challenge.winner}">PlayerName</span>
+                                    </div>
+                                    <div>
+                                        <strong>Visibility:</strong>
+                                        <span th:switch="${challenge.visibility}">
+                                            <span th:case="'PUBLIC'">Public</span>
+                                            <span th:case="'FRIENDS_ONLY'">Friends Only</span>
+                                            <span th:case="'INVITE_ONLY'">Invite Only</span>
+                                            <span th:case="'PRIVATE'">Private</span>
+                                            <span th:case="*" th:text="${challenge.isPublic() ? 'Public' : 'Private'}">Public</span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- akcje wewnątrz karty -->
+                                <div style="margin-top:18px;display:flex;gap:1rem;">
+                                    <a class="gt-btn xl" href="#" style="flex:1;">Join Challenge</a>
+                                    <a class="gt-btn ghost xl" href="/challenges" style="flex:1;">Cancel</a>
+                                </div>
+
+                                <div style="margin-top:1rem;">
+                                    <a class="gt-btn" th:if="${userRole == 'ADMIN'}" th:href="@{/challenges/{id}/edit(id=${challenge.id})}">Edit</a>
+                                    <form th:if="${userRole == 'ADMIN'}" th:action="@{/challenges/{id}/delete(id=${challenge.id})}" method="post" style="display:inline-block;margin-left:8px">
+                                        <button class="gt-btn ghost" type="submit">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
-                    <div th:if="${challenge.platform != null}">
-                        <strong>Platform:</strong> <span th:text="${challenge.platform}">PC</span>
-                    </div>
-                    <div>
-                        <strong>Category:</strong> <span th:text="${challenge.category}">FPS</span>
-                    </div>
-                    <div>
-                        <strong>Difficulty:</strong> <span th:text="${challenge.difficulty}">Hard</span>
-                    </div>
-                    <div>
-                        <strong>Type:</strong> <span th:text="${challenge.type}">Monthly</span>
-                    </div>
-                    <div>
-                        <strong>Reward XP:</strong> <span th:text="${challenge.rewardXp}">250</span>
-                    </div>
-                    <div>
-                        <strong>Status:</strong> <span th:text="${challenge.status}">ACTIVE</span>
-                    </div>
-                    <div>
-                        <strong>Created:</strong> <span th:text="${challenge.dateOfCreation}">2025-01-01</span>
-                    </div>
-                    <div th:if="${challenge.dateOfClosing != null}">
-                        <strong>Closing Date:</strong> <span th:text="${challenge.dateOfClosing}">2025-12-31</span>
-                    </div>
-                    <div th:if="${challenge.winner != null}">
-                        <strong>Winner:</strong> <span th:text="${challenge.winner}">PlayerName</span>
-                    </div>
-                    <div>
-                        <strong>Visibility:</strong>
-                        <span th:switch="${challenge.visibility}">
-                            <span th:case="'PUBLIC'">Public</span>
-                            <span th:case="'FRIENDS_ONLY'">Friends Only</span>
-                            <span th:case="'INVITE_ONLY'">Invite Only</span>
-                            <span th:case="'PRIVATE'">Private</span>
-                            <span th:case="*" th:text="${challenge.isPublic() ? 'Public' : 'Private'}">Public</span>
-                        </span>
-                    </div>
-                    <div th:if="${challenge.creator != null}">
-                        <strong>Created by:</strong>
-                        <a th:href="@{/users/{username}(username=${challenge.creator.username})}" th:text="${challenge.creator.username}">Admin</a>
-                    </div>
+
+                    <!-- right column: sidebar (aligned to top of grid next to hero title) -->
+                    <aside class="creator-sidebar">
+                        <div style="background: rgba(255,255,255,0.03); border-radius: 12px; padding: 1rem;">
+                            <h3 style="margin:0 0 8px 0;color:#fff">Created by</h3>
+
+                            <div th:if="${challenge.creator != null}" style="display:flex;align-items:center;gap:12px">
+                                <a th:href="@{/users/{username}(username=${challenge.creator.username})}" class="creator-link" style="padding:4px">
+                                    <div th:if="${challenge.creator.avatarUrl != null and !#strings.isEmpty(challenge.creator.avatarUrl)}" class="creator-avatar">
+                                        <img th:src="${challenge.creator.avatarUrl}" alt="Avatar">
+                                    </div>
+                                    <div th:if="${challenge.creator.avatarUrl == null or #strings.isEmpty(challenge.creator.avatarUrl)}" class="creator-initial">
+                                        <span th:text="${#strings.substring(challenge.creator.username,0,1)?.toUpperCase()}">U</span>
+                                    </div>
+                                    <div style="color:#fff;font-weight:700"> <span th:text="${challenge.creator.username}">Admin</span></div>
+                                </a>
+                            </div>
+
+                            <div th:if="${challenge.creator == null}" style="color:rgba(255,255,255,0.6);font-size:13px">Creator unknown</div>
+                        </div>
+                    </aside>
                 </div>
-            </div>
-
-            <div style="display: flex; gap: 1rem;">
-                <a class="gt-btn xl" href="#" style="flex: 1;">Join Challenge</a>
-                <a class="gt-btn ghost xl" href="/challenges" style="flex: 1;">Cancel</a>
-            </div>
-
-            <div style="margin-top:1rem;">
-                <a class="gt-btn" th:if="${userRole == 'ADMIN'}" th:href="@{/challenges/{id}/edit(id=${challenge.id})}">Edit</a>
-                <form th:if="${userRole == 'ADMIN'}" th:action="@{/challenges/{id}/delete(id=${challenge.id})}" method="post" style="display:inline-block;margin-left:8px">
-                    <button class="gt-btn ghost" type="submit">Delete</button>
-                </form>
             </div>
         </div>
     </section>

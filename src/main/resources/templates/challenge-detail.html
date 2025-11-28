@@ -74,7 +74,8 @@
                         </span>
                     </div>
                     <div th:if="${challenge.creator != null}">
-                        <strong>Created by:</strong> <span th:text="${challenge.creator.username}">Admin</span>
+                        <strong>Created by:</strong>
+                        <a th:href="@{/users/{username}(username=${challenge.creator.username})}" th:text="${challenge.creator.username}">Admin</a>
                     </div>
                 </div>
             </div>
@@ -82,6 +83,13 @@
             <div style="display: flex; gap: 1rem;">
                 <a class="gt-btn xl" href="#" style="flex: 1;">Join Challenge</a>
                 <a class="gt-btn ghost xl" href="/challenges" style="flex: 1;">Cancel</a>
+            </div>
+
+            <div style="margin-top:1rem;">
+                <a class="gt-btn" th:if="${userRole == 'ADMIN'}" th:href="@{/challenges/{id}/edit(id=${challenge.id})}">Edit</a>
+                <form th:if="${userRole == 'ADMIN'}" th:action="@{/challenges/{id}/delete(id=${challenge.id})}" method="post" style="display:inline-block;margin-left:8px">
+                    <button class="gt-btn ghost" type="submit">Delete</button>
+                </form>
             </div>
         </div>
     </section>
@@ -100,4 +108,3 @@
 
 </body>
 </html>
-

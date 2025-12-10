@@ -5,8 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.http.HttpMethod;
 
 @Configuration
 public class SecurityConfig {
@@ -44,6 +46,10 @@ public class SecurityConfig {
                         .requestMatchers("/challenges").permitAll()
                         .requestMatchers("/challenges/**").permitAll()
 
+                        // allow public GET access to list and individual challenge pages
+                        .requestMatchers(HttpMethod.GET, "/challenges", "/challenges/*").permitAll()
+
+                        // other requests - allow (adjust later for tighter policies)
                         .anyRequest().permitAll()
                 )
 

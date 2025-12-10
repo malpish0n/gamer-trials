@@ -25,10 +25,7 @@ body{
     margin:0;
     font-family:var(--font);
     color:var(--text);
-    background:
-            radial-gradient(80rem 40rem at 10% -10%, rgba(0,255,128,.08), transparent 60%),
-            radial-gradient(70rem 50rem at 100% 10%, rgba(0,255,128,.06), transparent 60%),
-            linear-gradient(180deg,var(--bg),var(--bg-2));
+    background:var(--bg);
 }
 
 .gt-container{

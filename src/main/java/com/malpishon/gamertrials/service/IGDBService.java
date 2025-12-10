@@ -90,10 +90,9 @@ public class IGDBService {
 
             String body = String.format(
                     "search \"%s\"; " +
-                    "fields name, cover.url, cover.image_id, first_release_date, platforms.name, genres.name, rating_count, category; " +
-                    "limit %d;",
-                    query.replace("\"", "\\\""),
-                    limit * 3
+                    "fields name, cover.url, cover.image_id, first_release_date, platforms.name, genres.name, rating, rating_count, category; " +
+                    "limit 100;",
+                    query.replace("\"", "\\\"")
             );
 
             System.out.println("IGDB Query: " + body);
@@ -115,21 +114,29 @@ public class IGDBService {
             IGDBGame[] games = objectMapper.readValue(response.getBody(), IGDBGame[].class);
             System.out.println("Found " + games.length + " games before filtering");
 
-            List<IGDBGame> filteredGames = Arrays.stream(games)
+            List<IGDBGame> filtered = Arrays.stream(games)
                     .filter(game -> {
+                        Double rating = game.getRating();
                         Integer ratingCount = game.getRatingCount();
-                        if (ratingCount != null && ratingCount < 10) {
-                            System.out.println("Excluding: " + game.getName() + " (rating_count too low: " + ratingCount + ")");
+
+                        if (rating == null || rating < 5.0) {
                             return false;
                         }
-
-                        Integer category = game.getCategory();
-                        if (category != null && category != 0 && category != 2 && category != 4 && category != 8 && category != 9 && category != 10) {
-                            System.out.println("Excluding: " + game.getName() + " (category: " + category + ")");
+                        if (ratingCount == null || ratingCount < 20) {
                             return false;
                         }
-
                         return true;
+                    })
+                    .sorted((g1, g2) -> {
+                        Double r1 = g1.getRating() != null ? g1.getRating() : 0.0;
+                        Double r2 = g2.getRating() != null ? g2.getRating() : 0.0;
+                        Integer rc1 = g1.getRatingCount() != null ? g1.getRatingCount() : 0;
+                        Integer rc2 = g2.getRatingCount() != null ? g2.getRatingCount() : 0;
+
+                        Double score1 = r1 * Math.log(rc1 + 1);
+                        Double score2 = r2 * Math.log(rc2 + 1);
+
+                        return score2.compareTo(score1);
                     })
                     .sorted((g1, g2) -> {
                         Integer rc1 = g1.getRatingCount() != null ? g1.getRatingCount() : 0;
@@ -139,8 +146,8 @@ public class IGDBService {
                     .limit(limit)
                     .collect(Collectors.toList());
 
-            System.out.println("Returning " + filteredGames.size() + " filtered games");
-            return filteredGames;
+            System.out.println("Returning " + filtered.size() + " games sorted by popularity");
+            return filtered;
 
         } catch (Exception e) {
             System.err.println("Error searching games: " + e.getMessage());
@@ -197,9 +204,9 @@ public class IGDBService {
             headers.setContentType(MediaType.TEXT_PLAIN);
 
             String body = String.format(
-                    "fields name,cover.url,cover.image_id,first_release_date,platforms.name,genres.name; " +
-                    "where rating_count > 10 & (category = 0 | category = 8 | category = 9); " +
-                    "sort rating_count desc; " +
+                    "fields name,cover.url,cover.image_id,first_release_date,platforms.name,genres.name,rating; " +
+                    "where (category = 0 | category = 8 | category = 9) & rating >= 5; " +
+                    "sort rating desc; " +
                     "limit %d;",
                     limit
             );

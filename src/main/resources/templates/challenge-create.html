@@ -150,7 +150,7 @@
             </div>
 
             <div class="form-group">
-                <label for="game">Game *</label>
+                <label for="gameSearch">Game *</label>
                 <input type="text"
                        id="gameSearch"
                        placeholder="Search for a game..."
@@ -165,17 +165,6 @@
 
             <div class="form-row">
                 <div class="form-group">
-                    <label for="difficulty">Difficulty *</label>
-                    <select id="difficulty" name="difficulty" th:field="*{difficulty}" required>
-                        <option value="">Select Difficulty</option>
-                        <option value="Easy">Easy</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Hard">Hard</option>
-                        <option value="Expert">Expert</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
                     <label for="type">Type *</label>
                     <select id="type" name="type" th:field="*{type}" required>
                         <option value="">Select Type</option>
@@ -186,9 +175,7 @@
                         <option value="No Time Limit">No Time Limit</option>
                     </select>
                 </div>
-            </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
                 <div class="form-group">
                     <label for="status">Status *</label>
                     <select id="status" name="status" th:field="*{status}" required>
@@ -196,10 +183,12 @@
                         <option value="UPCOMING">Upcoming</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="dateOfClosing">Closing Date (Optional)</label>
-                    <input type="date" id="dateOfClosing" name="dateOfClosing" th:field="*{dateOfClosing}">
-                </div>
+            </div>
+
+            <input type="hidden" id="difficulty" name="difficulty" th:field="*{difficulty}">
+            <input type="hidden" id="rewardXp" name="rewardXp" th:field="*{rewardXp}" value="0">
+
+            <div class="form-row">
                 <div class="form-group">
                     <label for="visibility">Visibility *</label>
                     <select id="visibility" name="visibility" required>
@@ -209,7 +198,14 @@
                         <option value="PRIVATE">Private</option>
                     </select>
                 </div>
+
+                <div class="form-group" id="startDateGroup" style="display: none;">
+                    <label for="startDate">Start Date *</label>
+                    <input type="date" id="startDate" name="startDate">
+                </div>
             </div>
+
+            <input type="hidden" id="dateOfClosing" name="dateOfClosing" th:field="*{dateOfClosing}">
 
             <div style="display: flex; gap: 1rem; margin-top: 2rem;">
                 <button type="submit" class="gt-btn xl" style="flex: 1;">Create Challenge</button>
@@ -270,7 +266,11 @@
                             '/img/placeholder-game.png';
 
                         return `
-                            <div class="autocomplete-item" data-game-name="${game.name}" data-game-id="${game.id}" data-game-platforms="${platforms}" data-game-genres="${genres}">
+                            <div class="autocomplete-item"
+                                 data-game-name="${game.name}"
+                                 data-game-id="${game.id}"
+                                 data-game-platforms="${platforms}"
+                                 data-game-genres="${genres}">
                                 <img src="${coverUrl}" alt="${game.name}" onerror="this.src='/img/placeholder-game.png'">
                                 <div class="autocomplete-item-info">
                                     <div class="autocomplete-item-name">${game.name}</div>
@@ -285,13 +285,11 @@
                             const gameName = this.getAttribute('data-game-name');
                             const platforms = this.getAttribute('data-game-platforms');
                             const genres = this.getAttribute('data-game-genres');
-
                             gameSearchInput.value = gameName;
                             gameHiddenInput.value = gameName;
                             document.getElementById('platform').value = platforms;
                             document.getElementById('category').value = genres;
-                            document.getElementById('platformDisplay').textContent = 'Platforms: ' + platforms;
-                            document.getElementById('categoryDisplay').textContent = 'Category: ' + genres;
+                            document.getElementById('platformDisplay').textContent = 'Platforms: ' + platforms + ' | Genres: ' + genres;
                             gameDropdown.style.display = 'none';
                         });
                     });
@@ -309,15 +307,36 @@
         }
     });
 
+    const statusSelect = document.getElementById('status');
+    const startDateGroup = document.getElementById('startDateGroup');
+    const startDateInput = document.getElementById('startDate');
+
+    statusSelect.addEventListener('change', function() {
+        if (this.value === 'UPCOMING') {
+            startDateGroup.style.display = 'block';
+            startDateInput.setAttribute('required', 'required');
+        } else {
+            startDateGroup.style.display = 'none';
+            startDateInput.removeAttribute('required');
+            startDateInput.value = '';
+        }
+    });
+
     document.querySelector('form').addEventListener('submit', function(e) {
         if (!gameHiddenInput.value) {
             e.preventDefault();
             alert('Please select a game from the dropdown');
             gameSearchInput.focus();
+            return;
+        }
+
+        if (statusSelect.value === 'UPCOMING' && !startDateInput.value) {
+            e.preventDefault();
+            alert('Please select a start date for upcoming challenge');
+            startDateInput.focus();
         }
     });
 </script>
 
 </body>
 </html>
-

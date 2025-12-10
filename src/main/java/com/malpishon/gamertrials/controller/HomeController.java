@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.security.Principal;
 import java.util.*;
@@ -57,6 +58,36 @@ public class HomeController {
     public String profile(Model model, Principal principal) {
         if (principal == null) return "redirect:/login";
         User user = userRepository.findByUsername(principal.getName()).orElseThrow();
+        int xpToNext = userService.getXpToNextLevel(user);
+        int xpPct = userService.getXpProgressPercent(user);
+        Integer age = userService.getPublicAge(user);
+        CountryDisplay cd = resolveCountryDisplay(user.getLocation());
+        model.addAttribute("user", user);
+        model.addAttribute("xpToNext", xpToNext);
+        model.addAttribute("xpPct", xpPct);
+        model.addAttribute("age", age);
+        model.addAttribute("countryName", cd.name);
+        model.addAttribute("countryFlag", cd.flag);
+        model.addAttribute("rank", 214);
+        model.addAttribute("badgeCount", 0);
+        model.addAttribute("trophyCount", 0);
+        return "profile";
+    }
+
+    @GetMapping("/users/{username}")
+    public String publicProfile(@PathVariable String username, Model model, Principal principal) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user == null) return "redirect:/";
+        // if user set profilePrivate and requester is not the same user and not admin, deny
+        boolean isOwner = principal != null && principal.getName().equals(username);
+        boolean isAdmin = false;
+        if (principal != null) {
+            User requester = userRepository.findByUsername(principal.getName()).orElse(null);
+            if (requester != null && "ADMIN".equals(requester.getRole())) isAdmin = true;
+        }
+        if (user.getProfilePrivate() != null && user.getProfilePrivate() && !isOwner && !isAdmin) {
+            return "redirect:/"; // or show a locked/profile-private view
+        }
         int xpToNext = userService.getXpToNextLevel(user);
         int xpPct = userService.getXpProgressPercent(user);
         Integer age = userService.getPublicAge(user);
@@ -135,3 +166,4 @@ public class HomeController {
         return new CountryDisplay(s, "");
     }
 }
+

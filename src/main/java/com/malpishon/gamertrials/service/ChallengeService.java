@@ -26,4 +26,13 @@ public class ChallengeService {
     public Challenge getById(Long id) {
         return challengeRepository.findById(id).orElse(null);
     }
+
+    public Challenge updateChallenge(Challenge challenge) {
+        // save behaves as update when id is present
+        return challengeRepository.save(challenge);
+    }
+
+    public void deleteById(Long id) {
+        challengeRepository.deleteById(id);
+    }
 }

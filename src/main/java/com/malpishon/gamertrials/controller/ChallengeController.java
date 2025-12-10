@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -51,6 +52,9 @@ public class ChallengeController {
             return "redirect:/challenges";
         }
         model.addAttribute("challenge", challenge);
+        if (challenge.getCreator() != null) {
+            model.addAttribute("creator", challenge.getCreator());
+        }
         return "challenge-detail";
     }
 
@@ -84,5 +88,41 @@ public class ChallengeController {
         challengeService.createChallenge(challenge);
         return "redirect:/challenges";
     }
-}
 
+    @GetMapping("/{id}/edit")
+    public String editChallengeForm(@PathVariable Long id, Model model) {
+        Challenge challenge = challengeService.getById(id);
+        if (challenge == null) return "redirect:/challenges";
+        model.addAttribute("challenge", challenge);
+        model.addAttribute("games", new ArrayList<>());
+        return "challenge-edit";
+    }
+
+    @PostMapping("/{id}/edit")
+    public String submitEdit(@PathVariable Long id, @ModelAttribute Challenge updated) {
+        Challenge existing = challengeService.getById(id);
+        if (existing == null) return "redirect:/challenges";
+        // only admins can access this path (configured in SecurityConfig)
+        existing.setName(updated.getName());
+        existing.setDescription(updated.getDescription());
+        existing.setGame(updated.getGame());
+        existing.setPlatform(updated.getPlatform());
+        existing.setCategory(updated.getCategory());
+        existing.setType(updated.getType());
+        existing.setDifficulty(updated.getDifficulty());
+        existing.setVisibility(updated.getVisibility());
+        existing.setPublic(updated.isPublic());
+        existing.setStatus(updated.getStatus());
+        existing.setDateOfClosing(updated.getDateOfClosing());
+        // rewardXp left for admins only if desired
+        challengeService.updateChallenge(existing);
+        return "redirect:/challenges/" + id;
+    }
+
+    @PostMapping("/{id}/delete")
+    public String deleteChallenge(@PathVariable Long id) {
+        // admins only (SecurityConfig)
+        challengeService.deleteById(id);
+        return "redirect:/challenges";
+    }
+}
